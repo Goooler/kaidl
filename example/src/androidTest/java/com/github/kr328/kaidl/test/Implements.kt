@@ -6,6 +6,14 @@ import android.util.SparseBooleanArray
 import java.util.UUID
 
 class BasicTypeImpl : BasicTypeInterface {
+  var notifyCount: Int = 0
+  var lastNotifiedValue: Int? = null
+
+  override fun notifyInt(v: Int) {
+    notifyCount++
+    lastNotifiedValue = v
+  }
+
   override fun echoInt(v: Int) = v
 
   override fun echoLong(v: Long) = v
@@ -45,6 +53,10 @@ class ContainerImpl : ContainerInterface {
   override fun echoIntList(v: List<Int>): List<Int> = v
 
   override fun echoDoubleList(v: List<Double>): List<Double> = v
+
+  override fun echoStringIntPair(v: Pair<String, Int>): Pair<String, Int> = v
+
+  override fun echoStringArray(v: Array<String>): Array<String> = v
 
   override fun echoStringLongMap(v: Map<String, Long>): Map<String, Long> = v
 

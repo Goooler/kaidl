@@ -2,6 +2,7 @@
 kotlin = "2.3.20"
 agp = "9.1.1"
 ksp = "2.3.6"
+kct = "0.12.1"
 jvmTarget = "17"
 
 [libraries]
@@ -12,6 +13,8 @@ junit-jvm = "junit:junit:4.13.2"
 junit-android = "androidx.test.ext:junit:1.3.0"
 espresso = "androidx.test.espresso:espresso-core:3.7.0"
 assertk = "com.willowtreeapps.assertk:assertk:0.28.1"
+kct-core = { module = "dev.zacsweers.kctfork:core", version.ref = "kct" }
+kct-ksp = { module = "dev.zacsweers.kctfork:ksp", version.ref = "kct" }
 
 # Dummy to get renovate updates, the version is used in rootProject build.gradle with spotless.
 ktfmt = "com.facebook:ktfmt:0.62"
