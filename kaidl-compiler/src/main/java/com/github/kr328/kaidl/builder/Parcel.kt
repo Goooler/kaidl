@@ -62,7 +62,7 @@ fun CodeBlock.Builder.addReadFromParcel(type: TypeName, parcelName: String): Cod
 
       endControlFlow()
     }
-    "kotlin.collections.Array" -> {
+    "kotlin.Array" -> {
       type as ParameterizedTypeName
 
       beginControlFlow("%T(%N.readInt())", type, parcelName)
@@ -199,7 +199,7 @@ fun CodeBlock.Builder.addWriteToParcel(
     }
     "kotlin.collections.List",
     "kotlin.collections.Set",
-    "kotlin.collections.Array" -> {
+    "kotlin.Array" -> {
       type as ParameterizedTypeName
 
       addStatement("%N.writeInt(%N.size)", parcelName, valName)
