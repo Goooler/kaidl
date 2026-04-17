@@ -68,6 +68,36 @@ class KaidlProcessorTest {
   }
 
   @Test
+  fun generatesParcelableReaderUsingParcelableCreator() {
+    val compilation =
+      newCompilation(
+        annotationSource,
+        runtimeSource,
+        androidStubsSource,
+        parcelizeStubsSource,
+        parcelableTypeSource,
+        parcelableServiceSource,
+      )
+
+    val result = compilation.compile()
+
+    assertThat(result.exitCode).isEqualTo(KotlinCompilation.ExitCode.OK)
+
+    val generated =
+      compilation.kspSourcesDir.resolve("kotlin/com/example/service/ParcelableBridgeService.kt")
+
+    assertThat(generated).exists()
+
+    val text = generated.readText()
+    assertThat(text)
+      .contains(
+        "import kotlinx.parcelize.parcelableCreator",
+        "checkNotNull(parcelableCreator<ConfigurationOverride>().createFromParcel(`data`))",
+      )
+    assertThat(text.contains("ConfigurationOverride.CREATOR.createFromParcel")).isEqualTo(false)
+  }
+
+  @Test
   fun failsWhenBinderInterfaceIsNotAnInterface() {
     val compilation =
       newCompilation(
@@ -149,6 +179,16 @@ class KaidlProcessorTest {
           fun asBinder(): IBinder
         }
 
+        interface Parcelable {
+          fun writeToParcel(parcel: Parcel, flags: Int)
+
+          fun describeContents(): Int
+
+          interface Creator<T> {
+            fun createFromParcel(parcel: Parcel): T
+          }
+        }
+
         interface IBinder {
           companion object {
             const val FIRST_CALL_TRANSACTION: Int = 1
@@ -196,6 +236,21 @@ class KaidlProcessorTest {
           .trimIndent(),
       )
 
+    val parcelizeStubsSource =
+      SourceFile.kotlin(
+        "ParcelizeStubs.kt",
+        """
+        package kotlinx.parcelize
+
+        import android.os.Parcelable
+
+        inline fun <reified T> parcelableCreator(): Parcelable.Creator<T> {
+          throw UnsupportedOperationException("compile-fixture")
+        }
+        """
+          .trimIndent(),
+      )
+
     val serviceSource =
       SourceFile.kotlin(
         "TestService.kt",
@@ -209,6 +264,45 @@ class KaidlProcessorTest {
           fun ping(value: Int): Int
 
           fun autoCode(): Int
+        }
+        """
+          .trimIndent(),
+      )
+
+    val parcelableTypeSource =
+      SourceFile.kotlin(
+        "ConfigurationOverride.kt",
+        """
+        package com.example.service
+
+        import android.os.Parcel
+        import android.os.Parcelable
+
+        class ConfigurationOverride : Parcelable {
+          override fun writeToParcel(parcel: Parcel, flags: Int) = Unit
+
+          override fun describeContents(): Int = 0
+        }
+        """
+          .trimIndent(),
+      )
+
+    val parcelableServiceSource =
+      SourceFile.kotlin(
+        "ParcelableBridgeService.kt",
+        """
+        package com.example.service
+
+        import com.github.kr328.kaidl.BinderInterface
+
+        @BinderInterface
+        interface ParcelableBridgeService {
+          enum class OverrideSlot {
+            SlotA,
+            SlotB,
+          }
+
+          fun patchOverride(slot: OverrideSlot, configuration: ConfigurationOverride)
         }
         """
           .trimIndent(),
