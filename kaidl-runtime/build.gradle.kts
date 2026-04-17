@@ -1,5 +1,5 @@
 plugins {
-    id("com.android.library")
+    alias(libs.plugins.android.library)
 }
 
 android {
@@ -7,5 +7,5 @@ android {
 }
 
 dependencies {
-    compileOnly(kotlinv.coroutine)
+    compileOnly(libs.coroutine)
 }

@@ -5,17 +5,10 @@ import com.android.build.gradle.api.AndroidBasePlugin
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath(androidv.gradle)
-        classpath(kotlinv.ksp.gradle)
-        classpath(kotlinv.gradle)
-    }
+plugins {
+    alias(libs.plugins.kotlin.jvm) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.google.ksp) apply false
 }
 
 allprojects {

@@ -1,8 +1,8 @@
 plugins {
-    kotlin("jvm")
+    alias(libs.plugins.kotlin.jvm)
 }
 
 dependencies {
-    implementation(kotlinv.ksp.api)
-    implementation(kotlinv.poet)
+    implementation(libs.ksp.api)
+    implementation(libs.kotlinpoet)
 }

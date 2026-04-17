@@ -1,6 +1,6 @@
 plugins {
-    id("com.android.library")
-    id("com.google.devtools.ksp")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.google.ksp)
 }
 
 android {
@@ -11,8 +11,8 @@ dependencies {
     ksp(project(":kaidl"))
     implementation(project(":kaidl-runtime"))
 
-    implementation(kotlinv.coroutine)
-    testImplementation(testingv.junit.jvm)
-    androidTestImplementation(testingv.junit.android)
-    androidTestImplementation(testingv.espresso)
+    implementation(libs.coroutine)
+    testImplementation(libs.junit.jvm)
+    androidTestImplementation(libs.junit.android)
+    androidTestImplementation(libs.espresso)
 }
