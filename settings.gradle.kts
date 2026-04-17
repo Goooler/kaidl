@@ -13,7 +13,7 @@ dependencyResolutionManagement {
     }
     versionCatalogs {
         create("kotlinv") {
-            val common = "1.9.25"
+            val common = "2.3.20"
             val coroutine = "1.5.2"
             val ksp = "1.5.30-1.0.0"
             val poet = "1.9.0"
