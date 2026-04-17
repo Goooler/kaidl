@@ -1,6 +1,9 @@
 # Change Log
 
 
+## [Unreleased](https://github.com/Goooler/kaidl/compare/0.1.0...HEAD) - 2026-xx-xx
+
+
 ## [0.1.0](https://github.com/Goooler/kaidl/releases/tag/0.1.0) - 2026-04-17
 
 ### Fixed
