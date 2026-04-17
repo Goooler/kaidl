@@ -30,10 +30,40 @@ class KaidlProcessorTest {
     val text = generated.readText()
     assertThat(text)
       .contains(
-        "class TestServiceDelegate",
-        "class TestServiceProxy",
-        "public val TRANSACTION_ping: Int =",
-        "TRANSACTION_",
+        "public open class TestServiceDelegate(",
+        "public class TestServiceProxy(",
+        "public val TRANSACTION_ping: Int = IBinder.FIRST_CALL_TRANSACTION + 0",
+        "public val TRANSACTION_autoCode: Int = IBinder.FIRST_CALL_TRANSACTION + 1",
+      )
+  }
+
+  @Test
+  fun generatesAidlBridgeCodeForIInterfaceTypes() {
+    val compilation =
+      newCompilation(
+        annotationSource,
+        runtimeSource,
+        androidStubsSource,
+        aidlTypeSource,
+        aidlServiceSource,
+      )
+
+    val result = compilation.compile()
+
+    assertThat(result.exitCode).isEqualTo(KotlinCompilation.ExitCode.OK)
+
+    val generated =
+      compilation.kspSourcesDir.resolve("kotlin/com/example/service/AidlBridgeService.kt")
+
+    assertThat(generated).exists()
+
+    val text = generated.readText()
+    assertThat(text)
+      .contains(
+        "val service: LegacyAidl = LegacyAidl.Stub.asInterface(checkNotNull(`data`.readStrongBinder()))",
+        "reply.writeStrongBinder(_result.asBinder())",
+        "`data`.writeStrongBinder(service.asBinder())",
+        "val _result: LegacyAidl = LegacyAidl.Stub.asInterface(checkNotNull(reply.readStrongBinder()))",
       )
   }
 
@@ -144,6 +174,10 @@ class KaidlProcessorTest {
             fun obtain(): Parcel = Parcel()
           }
 
+          fun readStrongBinder(): IBinder? = null
+
+          fun writeStrongBinder(value: IBinder?) = Unit
+
           fun writeInterfaceToken(descriptor: String) = Unit
 
           fun enforceInterface(descriptor: String) = Unit
@@ -175,6 +209,48 @@ class KaidlProcessorTest {
           fun ping(value: Int): Int
 
           fun autoCode(): Int
+        }
+        """
+          .trimIndent(),
+      )
+
+    val aidlTypeSource =
+      SourceFile.kotlin(
+        "LegacyAidl.kt",
+        """
+        package com.example.service
+
+        import android.os.Binder
+        import android.os.IBinder
+        import android.os.IInterface
+
+        interface LegacyAidl : IInterface {
+          fun ping(value: Int): Int
+
+          abstract class Stub : Binder(), LegacyAidl {
+            companion object {
+              @JvmStatic
+              fun asInterface(binder: IBinder): LegacyAidl {
+                throw UnsupportedOperationException("compile-fixture")
+              }
+            }
+          }
+        }
+        """
+          .trimIndent(),
+      )
+
+    val aidlServiceSource =
+      SourceFile.kotlin(
+        "AidlBridgeService.kt",
+        """
+        package com.example.service
+
+        import com.github.kr328.kaidl.BinderInterface
+
+        @BinderInterface
+        interface AidlBridgeService {
+          fun echoAidl(service: LegacyAidl): LegacyAidl
         }
         """
           .trimIndent(),

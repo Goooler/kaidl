@@ -44,10 +44,14 @@ fun CodeBlock.Builder.addReadFromParcel(type: TypeName, parcelName: String): Cod
     "kotlin.Pair" -> {
       type as ParameterizedTypeName
 
+      beginControlFlow("run")
+
       addReadFromParcel("first", type.typeArguments[0], parcelName)
       addReadFromParcel("second", type.typeArguments[1], parcelName)
 
       addStatement("first to second")
+
+      endControlFlow()
     }
     "kotlin.collections.List" -> {
       type as ParameterizedTypeName

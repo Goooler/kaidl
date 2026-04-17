@@ -7,6 +7,8 @@ import com.github.kr328.kaidl.BinderInterface
 
 @BinderInterface
 interface BasicTypeInterface {
+  fun notifyInt(v: Int)
+
   fun echoInt(v: Int): Int
 
   fun echoLong(v: Long): Long

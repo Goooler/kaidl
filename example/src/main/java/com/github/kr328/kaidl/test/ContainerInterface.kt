@@ -8,6 +8,10 @@ interface ContainerInterface {
 
   fun echoDoubleList(v: List<Double>): List<Double>
 
+  fun echoStringIntPair(v: Pair<String, Int>): Pair<String, Int>
+
+  fun echoStringArray(v: Array<String>): Array<String>
+
   fun echoStringLongMap(v: Map<String, Long>): Map<String, Long>
 
   fun echoLongSetList(v: List<Set<Long>>): List<Set<Long>>

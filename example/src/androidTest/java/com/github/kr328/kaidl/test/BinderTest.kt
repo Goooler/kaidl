@@ -40,12 +40,17 @@ class BinderTest {
 
   @Test
   fun parcelBasicTypes() {
-    val impl = BasicTypeImpl().wrap()
-    val loopback = LoopbackIBinder(impl)
+    val impl = BasicTypeImpl()
+    val loopback = LoopbackIBinder(impl.wrap())
     val proxy = loopback.unwrap(BasicTypeInterface::class)
     val random = Random(System.currentTimeMillis())
 
     assertThat(proxy is BasicTypeImpl).isFalse()
+
+    val notifyValue = random.nextInt()
+    proxy.notifyInt(notifyValue)
+    assertThat(impl.lastNotifiedValue).isEqualTo(notifyValue)
+    assertThat(impl.notifyCount).isEqualTo(1)
 
     assertEchoEquals(random.nextInt(), proxy::echoInt)
     assertEchoEquals(random.nextLong(), proxy::echoLong)
@@ -55,6 +60,7 @@ class BinderTest {
     assertEchoEquals(random.nextBytes(1)[0], proxy::echoByte)
     assertEchoEquals(random.nextBoolean(), proxy::echoBoolean)
     assertEchoEquals(random.nextBytes(64), proxy::echoByteArray)
+    assertEchoEquals(byteArrayOf(), proxy::echoByteArray)
     assertEchoEquals(random.nextCharArray(64), proxy::echoCharArray)
     assertEchoEquals(random.nextBooleanArray(64), proxy::echoBooleanArray)
     assertEchoEquals(random.nextIntArray(64), proxy::echoIntArray)
@@ -87,12 +93,18 @@ class BinderTest {
     val random = Random(System.currentTimeMillis())
 
     assertEchoEquals(List(32) { random.nextInt() }, proxy::echoIntList)
+    assertEchoEquals(emptyList<Int>(), proxy::echoIntList)
     assertEchoEquals(List(32) { random.nextDouble() }, proxy::echoDoubleList)
+    assertEchoEquals(random.nextString() to random.nextInt(), proxy::echoStringIntPair)
+    assertEchoEquals(arrayOf(random.nextString(), random.nextString()), proxy::echoStringArray)
+    assertEchoEquals(emptyArray<String>(), proxy::echoStringArray)
     assertEchoEquals(
       List(32) { random.nextString() to random.nextLong() }.toMap(),
       proxy::echoStringLongMap,
     )
+    assertEchoEquals(emptyMap<String, Long>(), proxy::echoStringLongMap)
     assertEchoEquals(List(32) { List(8) { random.nextLong() }.toSet() }, proxy::echoLongSetList)
+    assertEchoEquals(emptyList<Set<Long>>(), proxy::echoLongSetList)
   }
 
   @Test
@@ -132,6 +144,12 @@ class BinderTest {
     assertEchoEquals(random.nextInt()) { proxy.echoBasicInterface(basic).echoInt(it) }
     assertEchoEquals(random.nextInt()) { proxy.echoBasicInterfaceNullable(basic)?.echoInt(it) ?: 0 }
     assertEchoEquals<Int?>(null) { proxy.echoBasicInterfaceNullable(null)?.echoInt(10) }
+    assertEchoEquals(List(10) { random.nextInt() }) { values ->
+      val interfaces = List(values.size) { basic }
+      proxy.echoBasicInterfaceList(interfaces).mapIndexed { index, iface ->
+        iface.echoInt(values[index])
+      }
+    }
     assertEchoEquals(List(10) { random.nextInt() }) { l ->
       l.map { proxy.echoBasicInterface(basic).echoInt(it) }
     }
