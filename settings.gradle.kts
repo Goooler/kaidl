@@ -32,7 +32,7 @@ dependencyResolutionManagement {
         create("testingv") {
             val junit = "4.13.2"
             val androidJunit = "1.3.0"
-            val espresso = "3.4.0"
+            val espresso = "3.7.0"
 
             alias("junit-jvm").to("junit:junit:$junit")
             alias("junit.android").to("androidx.test.ext:junit:$androidJunit")
