@@ -71,7 +71,7 @@ jobs:
       - uses: actions/setup-java@v5
         with:
           distribution: 'zulu'
-          java-version-file: .github/workflows/.java-version
+          java-version: 17
       - uses: gradle/actions/setup-gradle@v6
         with:
           cache-read-only: true
