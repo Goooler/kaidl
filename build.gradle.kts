@@ -17,7 +17,6 @@ allprojects {
             compileSdk = 37
             defaultConfig.apply {
                 minSdk = 21
-                vectorDrawables.useSupportLibrary = true
                 testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
             }
             compileOptions.apply {
