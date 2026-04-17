@@ -2,6 +2,7 @@ package com.github.kr328.kaidl
 
 import assertk.assertThat
 import assertk.assertions.contains
+import assertk.assertions.doesNotContain
 import assertk.assertions.exists
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotEqualTo
@@ -94,7 +95,7 @@ class KaidlProcessorTest {
         "import kotlinx.parcelize.parcelableCreator",
         "checkNotNull(parcelableCreator<ConfigurationOverride>().createFromParcel(`data`))",
       )
-    assertThat(text.contains("ConfigurationOverride.CREATOR.createFromParcel")).isEqualTo(false)
+    assertThat(text).doesNotContain("ConfigurationOverride.CREATOR.createFromParcel")
   }
 
   @Test
