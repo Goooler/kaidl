@@ -61,3 +61,24 @@ jobs:
             echo "One or more required jobs failed"
             exit 1
           fi
+
+  publish-snapshot:
+    needs: final-status
+    runs-on: ubuntu-latest
+    if: github.repository =='Goooler/kaidl' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
+        with:
+          distribution: 'zulu'
+          java-version-file: .github/workflows/.java-version
+      - uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-read-only: true
+          dependency-graph: 'generate-submit-and-upload'
+      - run: ./gradlew publishToMavenCentral
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.CENTRAL_PORTAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.CENTRAL_PORTAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.GPG_KEY_PASSWORD }}
