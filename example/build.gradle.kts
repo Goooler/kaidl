@@ -12,6 +12,7 @@ dependencies {
   ksp(projects.kaidlCompiler)
 
   testImplementation(libs.junit.jvm)
+  androidTestImplementation(libs.assertk)
   androidTestImplementation(libs.junit.android)
   androidTestImplementation(libs.espresso)
 }
