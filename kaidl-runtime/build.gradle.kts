@@ -1,9 +1,11 @@
 plugins {
-    id("com.android.library")
-    id("kotlin-android")
-    `maven-publish`
+    alias(libs.plugins.android.library)
+}
+
+android {
+    namespace = "com.github.kr328.kaidl.compiler"
 }
 
 dependencies {
-    compileOnly(kotlinv.coroutine)
+    compileOnly(libs.coroutine)
 }

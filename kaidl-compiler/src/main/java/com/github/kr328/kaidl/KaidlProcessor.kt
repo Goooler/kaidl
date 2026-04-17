@@ -47,7 +47,7 @@ class KaidlProcessor(private val codeGenerator: CodeGenerator) : SymbolProcessor
         codeGenerator.createNewFile(dependencies, className.packageName, className.simpleName)
             .writer().use {
             FileSpec.builder(className.packageName, "")
-                .addComment("Generated for $className")
+                .addFileComment("Generated for $className")
                 .addAnnotation(
                     AnnotationSpec.builder(Suppress::class)
                         .addMember(DEFAULT_SUPPRESS.joinToString(", ") { s -> "\"$s\"" })

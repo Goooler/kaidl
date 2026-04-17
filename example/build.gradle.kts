@@ -1,16 +1,19 @@
 plugins {
-    id("com.android.library")
-    id("kotlin-android")
-    id("com.google.devtools.ksp")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.google.ksp)
+}
+
+android {
+    namespace = "com.github.kr328.kaidl.test"
 }
 
 dependencies {
-    ksp(project(":kaidl"))
-    implementation(project(":kaidl-runtime"))
+    implementation(libs.coroutine)
 
-    implementation(kotlin("stdlib"))
-    implementation(kotlinv.coroutine)
-    testImplementation(testingv.junit.jvm)
-    androidTestImplementation(testingv.junit.android)
-    androidTestImplementation(testingv.espresso)
+    implementation(projects.kaidlRuntime)
+    ksp(projects.kaidlCompiler)
+
+    testImplementation(libs.junit.jvm)
+    androidTestImplementation(libs.junit.android)
+    androidTestImplementation(libs.espresso)
 }

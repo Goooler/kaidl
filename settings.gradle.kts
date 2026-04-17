@@ -1,42 +1,40 @@
-enableFeaturePreview("VERSION_CATALOGS")
-
-rootProject.name = "kaidl"
-
-include(":kaidl")
-include(":kaidl-runtime")
-include(":example")
+pluginManagement {
+    repositories {
+        google {
+            mavenContent {
+                includeGroupAndSubgroups("androidx")
+                includeGroupAndSubgroups("com.android")
+                includeGroupAndSubgroups("com.google")
+            }
+        }
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
 
 dependencyResolutionManagement {
     repositories {
-        mavenLocal()
-        google()
-    }
-    versionCatalogs {
-        create("kotlinv") {
-            val common = "1.9.25"
-            val coroutine = "1.5.2"
-            val ksp = "1.5.30-1.0.0"
-            val poet = "1.9.0"
-
-            alias("gradle").to("org.jetbrains.kotlin:kotlin-gradle-plugin:$common")
-            alias("coroutine").to("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine")
-            alias("poet").to("com.squareup:kotlinpoet:$poet")
-            alias("ksp-api").to("com.google.devtools.ksp:symbol-processing-api:$ksp")
-            alias("ksp-gradle").to("com.google.devtools.ksp:symbol-processing-gradle-plugin:$ksp")
-        }
-        create("androidv") {
-            val plugin = "4.2.2"
-
-            alias("gradle").to("com.android.tools.build:gradle:$plugin")
-        }
-        create("testingv") {
-            val junit = "4.13.2"
-            val androidJunit = "1.3.0"
-            val espresso = "3.7.0"
-
-            alias("junit-jvm").to("junit:junit:$junit")
-            alias("junit.android").to("androidx.test.ext:junit:$androidJunit")
-            alias("espresso").to("androidx.test.espresso:espresso-core:$espresso")
+        repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS
+        repositories {
+            google {
+                mavenContent {
+                    includeGroupAndSubgroups("androidx")
+                    includeGroupAndSubgroups("com.android")
+                    includeGroupAndSubgroups("com.google")
+                }
+            }
+            mavenCentral()
         }
     }
 }
+
+enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
+rootProject.name = "kaidl"
+
+include(
+    ":kaidl-compiler",
+    ":kaidl-runtime",
+    ":example",
+)
