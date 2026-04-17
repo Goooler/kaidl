@@ -28,10 +28,13 @@ class KaidlProcessorTest {
     assertThat(generated).exists()
 
     val text = generated.readText()
-    assertThat(text).contains("class TestServiceDelegate")
-    assertThat(text).contains("class TestServiceProxy")
-    assertThat(text).contains("public val TRANSACTION_ping: Int =")
-    assertThat(text).contains("TRANSACTION_")
+    assertThat(text)
+      .contains(
+        "class TestServiceDelegate",
+        "class TestServiceProxy",
+        "public val TRANSACTION_ping: Int =",
+        "TRANSACTION_",
+      )
   }
 
   @Test
