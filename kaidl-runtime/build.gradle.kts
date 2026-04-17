@@ -1,11 +1,5 @@
-plugins {
-    alias(libs.plugins.android.library)
-}
+plugins { alias(libs.plugins.android.library) }
 
-android {
-    namespace = "com.github.kr328.kaidl.compiler"
-}
+android { namespace = "com.github.kr328.kaidl.compiler" }
 
-dependencies {
-    compileOnly(libs.coroutine)
-}
+dependencies { compileOnly(libs.coroutine) }
