@@ -15,7 +15,7 @@ dependencyResolutionManagement {
         create("kotlinv") {
             val common = "1.9.25"
             val coroutine = "1.5.2"
-            val ksp = "1.5.30-1.0.0"
+            val ksp = "2.3.6"
             val poet = "1.9.0"
 
             alias("gradle").to("org.jetbrains.kotlin:kotlin-gradle-plugin:$common")
