@@ -14,4 +14,4 @@ espresso = "androidx.test.espresso:espresso-core:3.7.0"
 [plugins]
 android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-google-ksp = "com.google.devtools.ksp:2.3.4"
+google-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
