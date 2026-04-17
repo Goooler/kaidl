@@ -1,13 +1,30 @@
-rootProject.name = "kaidl"
-
-include(":kaidl")
-include(":kaidl-runtime")
-include(":example")
+pluginManagement {
+    repositories {
+        google {
+            mavenContent {
+                includeGroupAndSubgroups("androidx")
+                includeGroupAndSubgroups("com.android")
+                includeGroupAndSubgroups("com.google")
+            }
+        }
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
 
 dependencyResolutionManagement {
     repositories {
-        mavenLocal()
-        google()
+        repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+        repositories {
+            google {
+                mavenContent {
+                    includeGroupAndSubgroups("androidx")
+                    includeGroupAndSubgroups("com.android")
+                    includeGroupAndSubgroups("com.google")
+                }
+            }
+            mavenCentral()
+        }
     }
     versionCatalogs {
         create("kotlinv") {
@@ -17,10 +34,18 @@ dependencyResolutionManagement {
             version("poet", "2.3.0")
 
             library("gradle", "org.jetbrains.kotlin", "kotlin-gradle-plugin").versionRef("common")
-            library("coroutine", "org.jetbrains.kotlinx", "kotlinx-coroutines-core").versionRef("coroutine")
+            library(
+                "coroutine",
+                "org.jetbrains.kotlinx",
+                "kotlinx-coroutines-core"
+            ).versionRef("coroutine")
             library("poet", "com.squareup", "kotlinpoet").versionRef("poet")
             library("ksp-api", "com.google.devtools.ksp", "symbol-processing-api").versionRef("ksp")
-            library("ksp-gradle", "com.google.devtools.ksp", "symbol-processing-gradle-plugin").versionRef("ksp")
+            library(
+                "ksp-gradle",
+                "com.google.devtools.ksp",
+                "symbol-processing-gradle-plugin"
+            ).versionRef("ksp")
         }
         create("androidv") {
             version("plugin", "9.1.1")
@@ -37,3 +62,10 @@ dependencyResolutionManagement {
         }
     }
 }
+
+rootProject.name = "kaidl"
+
+include(":kaidl")
+include(":kaidl-runtime")
+include(":example")
+

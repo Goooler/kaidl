@@ -4,12 +4,7 @@ plugins {
 }
 
 android {
-    compileSdk = 37
     namespace = "com.github.kr328.kaidl.test"
-    defaultConfig {
-        minSdk = 21
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
 }
 
 dependencies {
