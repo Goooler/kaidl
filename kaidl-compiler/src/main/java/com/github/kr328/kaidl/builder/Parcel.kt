@@ -120,7 +120,8 @@ fun CodeBlock.Builder.addReadFromParcel(type: TypeName, parcelName: String): Cod
         }
         ParcelableType.Parcelable -> {
           addStatement(
-            "checkNotNull(%T.CREATOR.createFromParcel(%N))",
+            "checkNotNull(%M<%T>().createFromParcel(%N))",
+            MemberName("kotlinx.parcelize", "parcelableCreator"),
             type.copy(nullable = false),
             parcelName,
           )
