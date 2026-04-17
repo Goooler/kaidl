@@ -1,5 +1,7 @@
 # kaidl
 
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.goooler.kaidl/kaidl-compiler)](https://central.sonatype.com/artifact/io.github.goooler.kaidl/kaidl-compiler)
+
 Generate [AIDL](https://developer.android.com/guide/components/aidl)-like android binder interface with **Kotlin**
 
 
@@ -73,33 +75,18 @@ Generate [AIDL](https://developer.android.com/guide/components/aidl)-like androi
 
 - Add 'Kaidl' to your project
 
-  + Add 'kaidl' repositories
-
-     ```kotlin
-     repositories {
-         // ... other repositories
-   
-         maven {
-             url = uri("https://maven.kr328.app/releases")
-         }
-     }
-     ```
-
   + Add 'ksp' and runtime dependencies
 
     ```kotlin
      dependencies {
-         ksp("com.github.kr328.kaidl:kaidl:1.13")
-
-         implementation("com.github.kr328.kaidl:kaidl-runtime:1.13")
-
-         // ...other dependencies
+         ksp("io.github.goooler.kaidl:kaidl-compiler:latest")
+         implementation("io.github.goooler.kaidl:kaidl-runtime:latest")
      }
      ```
 
 - Example
 
-  See also [test module](https://github.com/Kr328/kaidl/tree/main/test)
+  See also [test module](https://github.com/Goooler/kaidl/tree/main/example/src)
 
 - Make IDE Aware Of Generated Code
 
