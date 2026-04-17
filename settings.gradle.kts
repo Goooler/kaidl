@@ -1,5 +1,3 @@
-enableFeaturePreview("VERSION_CATALOGS")
-
 rootProject.name = "kaidl"
 
 include(":kaidl")
@@ -13,30 +11,29 @@ dependencyResolutionManagement {
     }
     versionCatalogs {
         create("kotlinv") {
-            val common = "1.9.25"
-            val coroutine = "1.5.2"
-            val ksp = "1.5.30-1.0.0"
-            val poet = "1.9.0"
+            version("common", "2.3.20")
+            version("coroutine", "1.10.2")
+            version("ksp", "2.3.6")
+            version("poet", "2.3.0")
 
-            alias("gradle").to("org.jetbrains.kotlin:kotlin-gradle-plugin:$common")
-            alias("coroutine").to("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine")
-            alias("poet").to("com.squareup:kotlinpoet:$poet")
-            alias("ksp-api").to("com.google.devtools.ksp:symbol-processing-api:$ksp")
-            alias("ksp-gradle").to("com.google.devtools.ksp:symbol-processing-gradle-plugin:$ksp")
+            library("gradle", "org.jetbrains.kotlin", "kotlin-gradle-plugin").versionRef("common")
+            library("coroutine", "org.jetbrains.kotlinx", "kotlinx-coroutines-core").versionRef("coroutine")
+            library("poet", "com.squareup", "kotlinpoet").versionRef("poet")
+            library("ksp-api", "com.google.devtools.ksp", "symbol-processing-api").versionRef("ksp")
+            library("ksp-gradle", "com.google.devtools.ksp", "symbol-processing-gradle-plugin").versionRef("ksp")
         }
         create("androidv") {
-            val plugin = "4.2.2"
-
-            alias("gradle").to("com.android.tools.build:gradle:$plugin")
+            version("plugin", "9.1.1")
+            library("gradle", "com.android.tools.build", "gradle").versionRef("plugin")
         }
         create("testingv") {
-            val junit = "4.13.2"
-            val androidJunit = "1.3.0"
-            val espresso = "3.7.0"
+            version("junit", "4.13.2")
+            version("androidJunit", "1.3.0")
+            version("espresso", "3.7.0")
 
-            alias("junit-jvm").to("junit:junit:$junit")
-            alias("junit.android").to("androidx.test.ext:junit:$androidJunit")
-            alias("espresso").to("androidx.test.espresso:espresso-core:$espresso")
+            library("junit-jvm", "junit", "junit").versionRef("junit")
+            library("junit.android", "androidx.test.ext", "junit").versionRef("androidJunit")
+            library("espresso", "androidx.test.espresso", "espresso-core").versionRef("espresso")
         }
     }
 }

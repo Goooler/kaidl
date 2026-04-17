@@ -4,6 +4,10 @@ plugins {
     `maven-publish`
 }
 
+android {
+    namespace = "com.github.kr328.kaidl"
+}
+
 dependencies {
     compileOnly(kotlinv.coroutine)
 }

@@ -1,7 +1,6 @@
 @file:Suppress("UNUSED_VARIABLE")
 
-import com.android.build.gradle.BaseExtension
-import com.android.build.gradle.LibraryExtension
+import com.android.build.api.dsl.LibraryExtension
 import java.util.*
 
 buildscript {
@@ -29,26 +28,15 @@ subprojects {
     version = "1.15"
 
     afterEvaluate {
-        val android = extensions.findByType(BaseExtension::class)?.apply {
-            val isLibrary = this is LibraryExtension
-
-            compileSdkVersion(30)
+        val android = extensions.findByType(LibraryExtension::class)?.apply {
+            compileSdk = 36
 
             defaultConfig {
                 minSdk = 21
-                targetSdk = 30
-
-                versionName = version.toString()
-                versionCode = version.toString()
-                    .split(".")
-                    .joinToString(separator = "") { "%03d".format(it.toInt()) }
-                    .toInt(10)
+                targetSdk = 36
 
                 testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-                if (isLibrary) {
-                    consumerProguardFiles("consumer-rules.pro")
-                }
+                consumerProguardFiles("consumer-rules.pro")
             }
 
             buildTypes {
@@ -65,7 +53,7 @@ subprojects {
                     archiveClassifier.set("sources")
 
                     if (android != null) {
-                        from(android.sourceSets["main"].java.srcDirs)
+                        from(android.sourceSets.getByName("main").java.srcDirs)
                     } else {
                         from((project.extensions.getByName("sourceSets") as SourceSetContainer)["main"].allSource)
                     }
