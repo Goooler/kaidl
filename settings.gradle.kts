@@ -16,7 +16,7 @@ dependencyResolutionManagement {
             val common = "1.9.25"
             val coroutine = "1.5.2"
             val ksp = "1.5.30-1.0.0"
-            val poet = "1.9.0"
+            val poet = "1.18.1"
 
             alias("gradle").to("org.jetbrains.kotlin:kotlin-gradle-plugin:$common")
             alias("coroutine").to("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine")
