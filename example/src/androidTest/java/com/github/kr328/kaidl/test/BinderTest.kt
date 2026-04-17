@@ -138,10 +138,7 @@ class BinderTest {
       l.map { proxy.echoBasicInterface(basic).echoInt(it) }
     }
     assertEchoEquals(UUID.randomUUID(), proxy::echoUUID)
-    assertEchoEquals(
-      ExampleEnum.values()[random.nextInt(ExampleEnum.values().size)],
-      proxy::echoEnum,
-    )
+    assertEchoEquals(ExampleEnum.entries[random.nextInt(ExampleEnum.entries.size)], proxy::echoEnum)
   }
 
   @Test

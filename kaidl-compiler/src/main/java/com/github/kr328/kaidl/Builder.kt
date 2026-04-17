@@ -22,7 +22,6 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.STRING
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.UNIT
 import com.squareup.kotlinpoet.asClassName
 import kotlin.reflect.KClass
 
@@ -155,11 +154,11 @@ fun TypeSpec.Builder.addOnTransact(functions: Sequence<FunSpec>): TypeSpec.Build
 
         val args = f.parameters.joinToString(", ") { it.name }
 
-        addStatement("val %N: %T = %N($args)", "_result", f.returnType ?: UNIT, f.name)
+        addStatement("val %N: %T = %N($args)", "_result", f.returnType, f.name)
 
         addStatement("reply.writeNoException()")
 
-        addWriteToParcel("_result", f.returnType ?: UNIT, "reply")
+        addWriteToParcel("_result", f.returnType, "reply")
 
         if (f.modifiers.contains(KModifier.SUSPEND)) {
           endControlFlow()
@@ -227,7 +226,7 @@ fun TypeSpec.Builder.addProxy(forClass: ClassName, function: FunSpec): TypeSpec.
 
     addStatement("reply.readException()")
 
-    addReadFromParcel("_result", function.returnType ?: UNIT, "reply")
+    addReadFromParcel("_result", function.returnType, "reply")
 
     addStatement("_result")
 
@@ -255,5 +254,5 @@ fun Sequence<FunSpec>.mapOfCodes(): Map<String, Int> {
     generatedCode
   }
 
-  return map { it.name to (it.tag(CodeValue::class)?.code ?: generateCode()) }.toMap()
+  return associate { it.name to (it.tag(CodeValue::class)?.code ?: generateCode()) }
 }

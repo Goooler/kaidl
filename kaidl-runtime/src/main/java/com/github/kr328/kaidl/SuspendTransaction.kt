@@ -22,10 +22,10 @@ private abstract class CompletableBinder : Binder() {
 
   override fun onTransact(code: Int, data: Parcel, reply: Parcel?, flags: Int): Boolean {
     when (code) {
-      TRANSACTION_complete -> {
+      TRANSACTION_COMPLETE -> {
         onComplete(data)
       }
-      TRANSACTION_canceled -> {
+      TRANSACTION_CANCELED -> {
         onCanceled()
       }
       else -> return super.onTransact(code, data, reply, flags)
@@ -35,8 +35,8 @@ private abstract class CompletableBinder : Binder() {
   }
 
   companion object {
-    const val TRANSACTION_complete = IBinder.FIRST_CALL_TRANSACTION + 0
-    const val TRANSACTION_canceled = IBinder.FIRST_CALL_TRANSACTION + 1
+    const val TRANSACTION_COMPLETE = FIRST_CALL_TRANSACTION + 0
+    const val TRANSACTION_CANCELED = FIRST_CALL_TRANSACTION + 1
   }
 }
 
@@ -45,7 +45,7 @@ private abstract class TransactionContext : Binder() {
 
   override fun onTransact(code: Int, data: Parcel, reply: Parcel?, flags: Int): Boolean {
     when (code) {
-      TRANSACTION_requestCancel -> requestCancel()
+      TRANSACTION_REQUEST_CANCEL -> requestCancel()
       else -> super.onTransact(code, data, reply, flags)
     }
 
@@ -53,7 +53,7 @@ private abstract class TransactionContext : Binder() {
   }
 
   companion object {
-    const val TRANSACTION_requestCancel = IBinder.FIRST_CALL_TRANSACTION + 0
+    const val TRANSACTION_REQUEST_CANCEL = FIRST_CALL_TRANSACTION + 0
   }
 }
 
@@ -93,9 +93,7 @@ suspend fun IBinder.suspendTransact(code: Int, data: Parcel, reply: Parcel): Boo
           r.recycle()
         }
 
-      val link = IBinder.DeathRecipient {
-        @Suppress("ThrowableNotThrown") it.resumeWithException(DeadObjectException())
-      }
+      val link = IBinder.DeathRecipient { it.resumeWithException(DeadObjectException()) }
 
       finalizer = {
         try {
@@ -111,7 +109,7 @@ suspend fun IBinder.suspendTransact(code: Int, data: Parcel, reply: Parcel): Boo
         val stub = Parcel.obtain()
 
         try {
-          context.transact(TransactionContext.TRANSACTION_requestCancel, stub, null, 0)
+          context.transact(TransactionContext.TRANSACTION_REQUEST_CANCEL, stub, null, 0)
         } catch (e: Exception) {
           // ignore
         } finally {
@@ -135,7 +133,7 @@ fun suspendTransaction(data: Parcel, reply: Parcel, block: suspend (reply: Parce
     try {
       block(r)
 
-      completable.transact(CompletableBinder.TRANSACTION_complete, r, null, IBinder.FLAG_ONEWAY)
+      completable.transact(CompletableBinder.TRANSACTION_COMPLETE, r, null, IBinder.FLAG_ONEWAY)
     } catch (e: DeadObjectException) {
       // remote service dead
       // ignore
@@ -144,7 +142,7 @@ fun suspendTransaction(data: Parcel, reply: Parcel, block: suspend (reply: Parce
         withContext(NonCancellable) {
           if (e is CancellationException) {
             completable.transact(
-              CompletableBinder.TRANSACTION_canceled,
+              CompletableBinder.TRANSACTION_CANCELED,
               r,
               null,
               IBinder.FLAG_ONEWAY,
@@ -157,7 +155,7 @@ fun suspendTransaction(data: Parcel, reply: Parcel, block: suspend (reply: Parce
             )
 
             completable.transact(
-              CompletableBinder.TRANSACTION_complete,
+              CompletableBinder.TRANSACTION_COMPLETE,
               r,
               null,
               IBinder.FLAG_ONEWAY,
