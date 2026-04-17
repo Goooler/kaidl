@@ -28,8 +28,13 @@ dependencyResolutionManagement {
     }
 }
 
+enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 rootProject.name = "kaidl"
 
-include(":kaidl")
-include(":kaidl-runtime")
-include(":example")
+include(
+    ":kaidl-compiler",
+    ":kaidl-runtime",
+    ":example",
+)

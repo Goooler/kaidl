@@ -8,8 +8,8 @@ android {
 }
 
 dependencies {
-    ksp(project(":kaidl"))
-    implementation(project(":kaidl-runtime"))
+    ksp(projects.kaidlCompiler)
+    implementation(projects.kaidlRuntime)
 
     implementation(libs.coroutine)
     testImplementation(libs.junit.jvm)
