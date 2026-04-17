@@ -25,7 +25,7 @@ dependencyResolutionManagement {
             alias("ksp-gradle").to("com.google.devtools.ksp:symbol-processing-gradle-plugin:$ksp")
         }
         create("androidv") {
-            val plugin = "4.2.2"
+            val plugin = "9.1.1"
 
             alias("gradle").to("com.android.tools.build:gradle:$plugin")
         }
