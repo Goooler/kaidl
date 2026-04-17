@@ -21,22 +21,22 @@ allprojects {
                 testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
             }
             compileOptions.apply {
-                sourceCompatibility(17)
-                targetCompatibility(17)
+                sourceCompatibility(libs.versions.jvmTarget.get().toInt())
+                targetCompatibility(libs.versions.jvmTarget.get().toInt())
             }
         }
     }
 
     plugins.withType<JavaBasePlugin>().configureEach {
         extensions.configure<JavaPluginExtension> {
-            setSourceCompatibility(17)
-            setTargetCompatibility(17)
+            setSourceCompatibility(libs.versions.jvmTarget.get().toInt())
+            setTargetCompatibility(libs.versions.jvmTarget.get().toInt())
         }
     }
 
     tasks.withType<KotlinCompile>().configureEach {
         compilerOptions {
-            jvmTarget = JvmTarget.fromTarget(17.toString())
+            jvmTarget = JvmTarget.fromTarget(libs.versions.jvmTarget.get())
         }
     }
 }
