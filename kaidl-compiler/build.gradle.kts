@@ -3,6 +3,6 @@ plugins {
 }
 
 dependencies {
-    implementation(libs.ksp.api)
+    compileOnly(libs.ksp.api)
     implementation(libs.kotlinpoet)
 }
