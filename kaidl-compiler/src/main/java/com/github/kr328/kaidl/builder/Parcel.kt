@@ -24,20 +24,21 @@ fun CodeBlock.Builder.addReadFromParcel(type: TypeName, parcelName: String): Cod
     "kotlin.Long" -> addStatement("%N.readLong()", parcelName)
     "kotlin.Float" -> addStatement("%N.readFloat()", parcelName)
     "kotlin.Double" -> addStatement("%N.readDouble()", parcelName)
-    "kotlin.String" -> addStatement("%N.readString()!!", parcelName)
+    "kotlin.String" -> addStatement("checkNotNull(%N.readString())", parcelName)
     "kotlin.Byte" -> addStatement("%N.readByte()", parcelName)
     "kotlin.Unit" -> addStatement("Unit")
     "kotlin.Boolean" -> addStatement("%N.readInt() != 0", parcelName)
-    "kotlin.ByteArray" -> addStatement("%N.createByteArray()!!", parcelName)
-    "kotlin.CharArray" -> addStatement("%N.createCharArray()!!", parcelName)
-    "kotlin.BooleanArray" -> addStatement("%N.createBooleanArray()!!", parcelName)
-    "kotlin.IntArray" -> addStatement("%N.createIntArray()!!", parcelName)
-    "kotlin.LongArray" -> addStatement("%N.createLongArray()!!", parcelName)
-    "kotlin.FloatArray" -> addStatement("%N.createFloatArray()!!", parcelName)
-    "kotlin.DoubleArray" -> addStatement("%N.createDoubleArray()!!", parcelName)
-    "android.os.IBinder" -> addStatement("%N.readStrongBinder()!!", parcelName)
-    "android.os.Bundle" -> addStatement("%N.readBundle()!!", parcelName)
-    "android.util.SparseBooleanArray" -> addStatement("%N.readSparseBooleanArray()!!", parcelName)
+    "kotlin.ByteArray" -> addStatement("checkNotNull(%N.createByteArray())", parcelName)
+    "kotlin.CharArray" -> addStatement("checkNotNull(%N.createCharArray())", parcelName)
+    "kotlin.BooleanArray" -> addStatement("checkNotNull(%N.createBooleanArray())", parcelName)
+    "kotlin.IntArray" -> addStatement("checkNotNull(%N.createIntArray())", parcelName)
+    "kotlin.LongArray" -> addStatement("checkNotNull(%N.createLongArray())", parcelName)
+    "kotlin.FloatArray" -> addStatement("checkNotNull(%N.createFloatArray())", parcelName)
+    "kotlin.DoubleArray" -> addStatement("checkNotNull(%N.createDoubleArray())", parcelName)
+    "android.os.IBinder" -> addStatement("checkNotNull(%N.readStrongBinder())", parcelName)
+    "android.os.Bundle" -> addStatement("checkNotNull(%N.readBundle())", parcelName)
+    "android.util.SparseBooleanArray" ->
+      addStatement("checkNotNull(%N.readSparseBooleanArray())", parcelName)
 
     // collections
     "kotlin.Pair" -> {
@@ -101,20 +102,24 @@ fun CodeBlock.Builder.addReadFromParcel(type: TypeName, parcelName: String): Cod
       when (type.parcelableType) {
         ParcelableType.BinderInterface ->
           addStatement(
-            "%N.readStrongBinder()!!.%M(%T::class)",
+            "checkNotNull(%N.readStrongBinder()).%M(%T::class)",
             parcelName,
             MemberName(type.packageName, "unwrap"),
             type.copy(nullable = false),
           )
         ParcelableType.AidlInterface -> {
           addStatement(
-            "%T.asInterface(%N.readStrongBinder()!!)",
+            "%T.asInterface(checkNotNull(%N.readStrongBinder()))",
             (type.copy(nullable = false) as ClassName).nestedClass("Stub"),
             parcelName,
           )
         }
         ParcelableType.Parcelable -> {
-          addStatement("%T.CREATOR.createFromParcel(%N)!!", type.copy(nullable = false), parcelName)
+          addStatement(
+            "checkNotNull(%T.CREATOR.createFromParcel(%N))",
+            type.copy(nullable = false),
+            parcelName,
+          )
         }
         ParcelableType.Serializable -> {
           addStatement("%N.readSerializable() as %T", parcelName, type.copy(nullable = false))

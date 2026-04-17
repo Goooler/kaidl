@@ -45,7 +45,7 @@ class KaidlProcessor(private val codeGenerator: CodeGenerator) : SymbolProcessor
   private fun generate(classDeclaration: KSClassDeclaration) {
     val className = classDeclaration.toClassName()
     val functions = classDeclaration.resolveFunctions()
-    val dependencies = Dependencies(true, classDeclaration.containingFile!!)
+    val dependencies = Dependencies(true, checkNotNull(classDeclaration.containingFile))
 
     codeGenerator
       .createNewFile(dependencies, className.packageName, className.simpleName)

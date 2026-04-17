@@ -13,7 +13,7 @@ val TypeName.parcelableType: ParcelableType
           getClassDeclarationByName(getKSNameFromString(canonicalName))
             ?: throw ClassNotFoundException("$canonicalName not found")
 
-        when (clazz.qualifiedName!!.asString()) {
+        when (checkNotNull(clazz.qualifiedName).asString()) {
           else ->
             when {
               clazz.getAnnotationByName(INTERFACE) != null -> ParcelableType.BinderInterface
