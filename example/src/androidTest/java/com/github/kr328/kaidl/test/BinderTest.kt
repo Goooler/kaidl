@@ -3,11 +3,14 @@ package com.github.kr328.kaidl.test
 import android.os.Binder
 import android.os.Bundle
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import assertk.assertions.isFalse
+import assertk.assertions.isTrue
 import java.util.Objects
 import java.util.UUID
 import kotlin.random.Random
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -20,24 +23,19 @@ import org.junit.runner.RunWith
 class BinderTest {
   private fun <T> assertEchoEquals(value: T, func: (T) -> T) {
     val echo = func(value)
-
-    assert(Objects.deepEquals(value, echo)) {
-      "${Objects.toString(value)} != ${Objects.toString(echo)}"
-    }
+    assertThat(Objects.deepEquals(value, echo)).isTrue()
   }
 
   private suspend fun <T> assertEchoEqualsSuspend(value: T, func: suspend (T) -> T) {
     val echo = func(value)
 
-    assert(Objects.deepEquals(value, echo)) {
-      "${Objects.toString(value)} != ${Objects.toString(echo)}"
-    }
+    assertThat(Objects.deepEquals(value, echo)).isTrue()
   }
 
   @Test
   fun assertion() {
-    assert(!Objects.deepEquals(1, 2))
-    assert(Objects.deepEquals(1, 1))
+    assertThat(Objects.deepEquals(1, 2)).isFalse()
+    assertThat(Objects.deepEquals(1, 1)).isTrue()
   }
 
   @Test
@@ -47,7 +45,7 @@ class BinderTest {
     val proxy = loopback.unwrap(BasicTypeInterface::class)
     val random = Random(System.currentTimeMillis())
 
-    assert(proxy !is BasicTypeImpl)
+    assertThat(proxy is BasicTypeImpl).isFalse()
 
     assertEchoEquals(random.nextInt(), proxy::echoInt)
     assertEchoEquals(random.nextLong(), proxy::echoLong)
@@ -67,7 +65,7 @@ class BinderTest {
 
     val bundle = Bundle().apply { putLong("key", random.nextLong()) }
 
-    assert(bundle.get("key")?.equals(proxy.echoBundle(bundle).get("key")) ?: false)
+    assertThat(bundle.get("key")).isEqualTo(proxy.echoBundle(bundle).get("key"))
 
     val descriptor = random.nextString()
 
@@ -78,7 +76,7 @@ class BinderTest {
         }
       }
 
-    assertEquals(descriptor, proxy.echoIBinder(stubBinder).interfaceDescriptor)
+    assertThat(proxy.echoIBinder(stubBinder).interfaceDescriptor).isEqualTo(descriptor)
   }
 
   @Test
@@ -157,7 +155,7 @@ class BinderTest {
       try {
         proxy.throwException(msg)
       } catch (e: Exception) {
-        assertEquals(msg, e.message)
+        assertThat(e.message).isEqualTo(msg)
       }
     }
   }
