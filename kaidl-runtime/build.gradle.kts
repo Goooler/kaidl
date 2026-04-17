@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.github.kr328.kaidl"
+    namespace = "com.github.kr328.kaidl.compiler"
 }
 
 dependencies {
