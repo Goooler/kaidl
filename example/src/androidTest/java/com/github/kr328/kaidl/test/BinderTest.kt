@@ -11,6 +11,8 @@ import java.util.Date
 import java.util.Objects
 import java.util.UUID
 import kotlin.random.Random
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -130,6 +132,7 @@ class BinderTest {
   }
 
   @Test
+  @OptIn(ExperimentalUuidApi::class)
   fun parcelComplexTypes() {
     val impl = ComplexTypesImpl().wrap()
     val loopback = LoopbackIBinder(impl)
@@ -156,6 +159,7 @@ class BinderTest {
       l.map { proxy.echoBasicInterface(basic).echoInt(it) }
     }
     assertEchoEquals(UUID.randomUUID(), proxy::echoUUID)
+    assertEchoEquals(Uuid.random(), proxy::echoKotlinUuid)
     assertEchoEquals(ExampleEnum.entries[random.nextInt(ExampleEnum.entries.size)], proxy::echoEnum)
   }
 

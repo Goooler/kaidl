@@ -2,6 +2,7 @@ package com.github.kr328.kaidl.test
 
 import com.github.kr328.kaidl.BinderInterface
 import java.util.UUID
+import kotlin.uuid.Uuid
 
 @BinderInterface
 interface ComplexTypeInterface {
@@ -18,6 +19,8 @@ interface ComplexTypeInterface {
   fun echoBasicInterfaceList(l: List<BasicTypeInterface>): List<BasicTypeInterface>
 
   fun echoUUID(v: UUID): UUID
+
+  @OptIn(kotlin.uuid.ExperimentalUuidApi::class) fun echoKotlinUuid(v: Uuid): Uuid
 
   fun echoEnum(v: ExampleEnum): ExampleEnum
 }
