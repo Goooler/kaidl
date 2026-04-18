@@ -515,7 +515,6 @@ class KaidlProcessorTest {
 
         import com.github.kr328.kaidl.BinderInterface
         import java.util.UUID
-        import kotlin.OptIn
         import kotlin.uuid.ExperimentalUuidApi
         import kotlin.uuid.Uuid
 
