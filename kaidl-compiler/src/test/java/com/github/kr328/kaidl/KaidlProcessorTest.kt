@@ -115,8 +115,8 @@ class KaidlProcessorTest {
     val text = generated.readText()
     assertThat(text)
       .contains(
-        "val value: Date = Date(`data`.readLong())",
-        "`data`.writeLong(value.time)",
+        "val `value`: Date = Date(`data`.readLong())",
+        "`data`.writeLong(`value`.time)",
         "val _result: Date = Date(reply.readLong())",
         "reply.writeLong(_result.time)",
       )
