@@ -86,9 +86,7 @@ See the example interfaces and instrumentation tests:
 - [example/src/main](https://github.com/Goooler/kaidl/tree/main/example/src/main)
 - [example/src/androidTest](https://github.com/Goooler/kaidl/tree/main/example/src/androidTest)
 
-For contribution workflow, see [CONTRIBUTING.md](./CONTRIBUTING.md). In short, new features
-should include test coverage (including `example/src/androidTest`) and README updates when
-applicable.
+- For contribution workflow, see [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## Credits
 
