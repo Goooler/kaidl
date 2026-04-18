@@ -73,7 +73,8 @@ val result = remote.echoInt(42)
 - Primitive arrays: `BooleanArray`, `ByteArray`, `CharArray`, `DoubleArray`, `FloatArray`,
   `IntArray`, `LongArray`
 - Android framework types: `Bundle`, `IBinder`, `SparseBooleanArray`
-- Java types: `java.util.Date` (encoded as epoch millis)
+- Java/Kotlin UUID and date types: `java.util.Date` (epoch millis), `java.util.UUID` and
+  `kotlin.uuid.Uuid` (string encoding)
 - Generic containers: `List<T>`, `Array<T>`, `Map<K, V>`, `Set<T>`, `Pair<A, B>`
 - Parcelables: custom `Parcelable`
 - Binder interfaces: other interfaces annotated with `@BinderInterface`

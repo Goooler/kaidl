@@ -123,6 +123,30 @@ class KaidlProcessorTest {
   }
 
   @Test
+  fun generatesUuidSerializationUsingStringEncoding() {
+    val compilation =
+      newCompilation(annotationSource, runtimeSource, androidStubsSource, uuidServiceSource)
+
+    val result = compilation.compile()
+
+    assertThat(result.exitCode).isEqualTo(KotlinCompilation.ExitCode.OK)
+
+    val generated =
+      compilation.kspSourcesDir.resolve("kotlin/com/example/service/UuidBridgeService.kt")
+
+    assertThat(generated).exists()
+
+    val text = generated.readText()
+    assertThat(text)
+      .contains(
+        "val `javaUuid`: UUID = UUID.fromString(checkNotNull(`data`.readString()))",
+        "`data`.writeString(`javaUuid`.toString())",
+        "val `kotlinUuid`: Uuid = Uuid.parse(checkNotNull(`data`.readString()))",
+        "`data`.writeString(`kotlinUuid`.toString())",
+      )
+  }
+
+  @Test
   fun failsWhenBinderInterfaceIsNotAnInterface() {
     val compilation =
       newCompilation(
@@ -342,6 +366,10 @@ class KaidlProcessorTest {
 
           fun readLong(): Long = 0L
 
+          fun writeString(value: String?) = Unit
+
+          fun readString(): String? = null
+
           fun recycle() = Unit
         }
         """
@@ -474,6 +502,29 @@ class KaidlProcessorTest {
         @BinderInterface
         interface DateBridgeService {
           fun echoDate(value: Date): Date
+        }
+        """
+          .trimIndent(),
+      )
+
+    val uuidServiceSource =
+      SourceFile.kotlin(
+        "UuidBridgeService.kt",
+        """
+        package com.example.service
+
+        import com.github.kr328.kaidl.BinderInterface
+        import java.util.UUID
+        import kotlin.OptIn
+        import kotlin.uuid.ExperimentalUuidApi
+        import kotlin.uuid.Uuid
+
+        @OptIn(ExperimentalUuidApi::class)
+        @BinderInterface
+        interface UuidBridgeService {
+          fun echoJavaUuid(javaUuid: UUID): UUID
+
+          fun echoKotlinUuid(kotlinUuid: Uuid): Uuid
         }
         """
           .trimIndent(),
