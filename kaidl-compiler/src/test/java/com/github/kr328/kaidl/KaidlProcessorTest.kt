@@ -165,7 +165,7 @@ class KaidlProcessorTest {
   }
 
   @Test
-  fun usesExplicitCodesForMultipleFunctions() {
+  fun usesExplicitCodeForSingleFunction() {
     val compilation =
       newCompilation(
         annotationSource,
