@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.util.SparseBooleanArray
 import com.github.kr328.kaidl.BinderInterface
+import java.util.Date
 
 @BinderInterface
 interface BasicTypeInterface {
@@ -42,4 +43,6 @@ interface BasicTypeInterface {
   fun echoBundle(v: Bundle): Bundle
 
   fun echoSparseBooleanArray(v: SparseBooleanArray): SparseBooleanArray
+
+  fun echoDate(v: Date): Date
 }
