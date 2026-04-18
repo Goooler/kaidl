@@ -12,14 +12,7 @@ fun KSDeclaration.getAnnotationByName(name: ClassName): KSAnnotation? {
 }
 
 inline fun <reified T> KSAnnotation.getValue(key: String?): T? {
-  // Try to find by parameter name first (for named arguments)
-  var argument = arguments.firstOrNull { it.name?.asString() == key }
-
-  // If not found and key is null, take the first argument (for positional arguments)
-  if (argument == null && key == null && arguments.isNotEmpty()) {
-    argument = arguments.first()
-  }
-
+  val argument = arguments.firstOrNull { it.name?.asString() == key }
   val rawValue = argument?.value ?: return null
 
   return when (T::class) {
