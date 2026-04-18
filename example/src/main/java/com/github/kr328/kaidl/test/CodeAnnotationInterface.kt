@@ -4,10 +4,10 @@ import com.github.kr328.kaidl.BinderInterface
 import com.github.kr328.kaidl.Code
 
 /**
- * Example interface demonstrating the use of @Code annotation to explicitly assign code values
- * to functions. These values are used to derive the generated Binder transaction codes and are
- * useful when you need to maintain stable mappings for backwards compatibility with existing
- * Binder protocol versions.
+ * Example interface demonstrating the use of @Code annotation to explicitly assign code values to
+ * functions. These values are used to derive the generated Binder transaction codes and are useful
+ * when you need to maintain stable mappings for backwards compatibility with existing Binder
+ * protocol versions.
  */
 @BinderInterface
 interface CodeAnnotationInterface {
