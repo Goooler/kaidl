@@ -47,7 +47,11 @@ fun CodeBlock.Builder.addReadFromParcel(type: TypeName, parcelName: String): Cod
         parcelName,
       )
     "kotlin.uuid.Uuid" ->
-      addStatement("%T.parse(checkNotNull(%N.readString()))", type.copy(nullable = false), parcelName)
+      addStatement(
+        "%T.parse(checkNotNull(%N.readString()))",
+        type.copy(nullable = false),
+        parcelName,
+      )
 
     // collections
     "kotlin.Pair" -> {
