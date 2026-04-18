@@ -5,6 +5,8 @@ import android.os.IBinder
 import android.util.SparseBooleanArray
 import java.util.Date
 import java.util.UUID
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 class BasicTypeImpl : BasicTypeInterface {
   var notifyCount: Int = 0
@@ -76,6 +78,7 @@ class NullableImpl : NullableInterface {
   override fun echoMap(v: Map<String, Long?>?): Map<String, Long?>? = v
 }
 
+@OptIn(ExperimentalUuidApi::class)
 class ComplexTypesImpl : ComplexTypeInterface {
   override fun echoParcelable(p: ExampleParcelable) = p
 
@@ -90,6 +93,8 @@ class ComplexTypesImpl : ComplexTypeInterface {
   override fun echoBasicInterfaceList(l: List<BasicTypeInterface>) = l
 
   override fun echoUUID(v: UUID): UUID = v
+
+  override fun echoKotlinUuid(v: Uuid): Uuid = v
 
   override fun echoEnum(v: ExampleEnum): ExampleEnum = v
 }
