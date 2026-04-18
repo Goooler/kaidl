@@ -99,7 +99,7 @@ class KaidlProcessorTest {
   }
 
   @Test
-  fun generatesDateReaderAndWriterUsingTimeMillis() {
+  fun generatesDateSerializationUsingEpochMillis() {
     val compilation =
       newCompilation(
         annotationSource,
