@@ -2,97 +2,93 @@
 
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.goooler.kaidl/kaidl-compiler)](https://central.sonatype.com/artifact/io.github.goooler.kaidl/kaidl-compiler)
 
-Generate [AIDL](https://developer.android.com/guide/components/aidl)-like android binder interface with **Kotlin**
+Kotlin-first Binder interface generation for Android.
 
+`kaidl` gives you an AIDL-like workflow using plain Kotlin interfaces and KSP. You define an
+interface once, annotate it, and use generated proxy/stub glue with strongly-typed APIs.
 
+## Why kaidl
 
-### Available Types
+- AIDL-like IPC without maintaining `.aidl` files
+- Kotlin interface-centric workflow
+- Works with suspend functions
+- Handles common Android IPC types, collections, parcelables, and nested binder interfaces
 
-- Primitives
+## Installation
 
-  - `Int` 
-  - `Long`
-  - `Boolean`
-  - `Float`
-  - `Double`
-  - `String`
-  - `Byte`
-  - `Char`
+1. Apply KSP in your module.
+   ```kotlin
+   plugins {
+     id("com.google.devtools.ksp") version "<ksp-version>"
+   }
+   ```
+2. Add the compiler and runtime dependencies.
+   ```kotlin
+   dependencies {
+     ksp("io.github.goooler.kaidl:kaidl-compiler:<latest>")
+     implementation("io.github.goooler.kaidl:kaidl-runtime:<latest>")
+   }
+   ```
+3. Sync and build.
+   ```bash
+   ./gradlew build
+   ```
 
-- Primitive Arrays
+**Notes**:
 
-  - `BooleanArray`
-  - `ByteArray`
-  - `CharArray`
-  - `DoubleArray`
-  - `FloatArray`
-  - `IntArray`
-  - `LongArray`
-  - `SparseBooleanArray`
+- Use a KSP version that matches your Kotlin version.
+- If generated symbols are not visible in IDE, follow KSP guidance:
+  https://github.com/google/ksp#make-ide-aware-of-generated-code
 
-- Containers with Generic
+## Quick Start
 
-  - `List<T>`
-  - `Array<T>`
-  - `Map<K, V>`
-  - `Set<T>`
+Define an interface:
 
-- Parcelables
+```kotlin
+import com.github.kr328.kaidl.BinderInterface
 
-  - Custom `Parcelable`
-  - `Bundle`
-  
-- Active Objects
-  
-  - `Binder`
-  - Other kaidl interfaces
-  
-  
+@BinderInterface
+interface EchoService {
+  fun echoInt(value: Int): Int
+}
+```
 
-### Usage
+Use generated helpers in service/client code:
 
-- Add 'KSP' to your project
+```kotlin
+class EchoImpl : EchoService {
+  override fun echoInt(value: Int): Int = value
+}
 
-  + Add ksp plugin repository in your project's `setting.gradle(.kts)`
+val localImpl = EchoImpl()
+val binder = localImpl.wrap()
+val remote = binder.unwrap(EchoService::class)
 
-     ```kotlin
-     pluginManagement {
-         repositories {
-             gradlePluginPortal()
-             google()
-         }
-     }
-     ```
+val result = remote.echoInt(42)
+```
 
-  + Apply plugin `kotlin-processing`
-   
-     ```kotlin
-     plugins {
-         id("com.google.devtools.ksp") version "latest"
-         // ...other plugins
-     }
-     ```
+## Supported Types
 
-- Add 'Kaidl' to your project
+- Primitives: `Int`, `Long`, `Boolean`, `Float`, `Double`, `String`, `Byte`, `Char`
+- Primitive arrays: `BooleanArray`, `ByteArray`, `CharArray`, `DoubleArray`, `FloatArray`,
+  `IntArray`, `LongArray`
+- Android framework types: `Bundle`, `IBinder`, `SparseBooleanArray`
+- Generic containers: `List<T>`, `Array<T>`, `Map<K, V>`, `Set<T>`, `Pair<A, B>`
+- Parcelables: custom `Parcelable`
+- Binder interfaces: other interfaces annotated with `@BinderInterface`
+- Nullable variants where applicable
+- Suspend functions
 
-  + Add 'ksp' and runtime dependencies
+## Example Project
 
-    ```kotlin
-     dependencies {
-         ksp("io.github.goooler.kaidl:kaidl-compiler:latest")
-         implementation("io.github.goooler.kaidl:kaidl-runtime:latest")
-     }
-     ```
+See the example interfaces and instrumentation tests:
 
-- Example
+- [example/src/main](https://github.com/Goooler/kaidl/tree/main/example/src/main)
+- [example/src/androidTest](https://github.com/Goooler/kaidl/tree/main/example/src/androidTest)
 
-  See also [test module](https://github.com/Goooler/kaidl/tree/main/example/src)
+For contribution workflow, see [CONTRIBUTING.md](./CONTRIBUTING.md).
 
-- Make IDE Aware Of Generated Code
-
-  See also [ksp](https://github.com/google/ksp#make-ide-aware-of-generated-code)
-
-### Credit
+## Credits
 
 - [Kotlin Symbol Processing](https://github.com/google/ksp)
-- [Kotlinpoet](https://github.com/square/kotlinpoet)
+- [KotlinPoet](https://github.com/square/kotlinpoet)
