@@ -108,3 +108,12 @@ val TypeName.canonicalName: String
       else -> throw IllegalArgumentException("unsupported type $this")
     }
   }
+
+fun TypeName.containsCanonicalName(name: String): Boolean {
+  return when (this) {
+    is ClassName -> canonicalName == name
+    is ParameterizedTypeName ->
+      rawType.canonicalName == name || typeArguments.any { it.containsCanonicalName(name) }
+    else -> false
+  }
+}
