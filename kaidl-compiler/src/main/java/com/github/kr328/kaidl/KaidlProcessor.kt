@@ -13,6 +13,7 @@ import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.validate
 import com.squareup.kotlinpoet.AnnotationSpec
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 
 class KaidlProcessor(private val codeGenerator: CodeGenerator) : SymbolProcessor {
@@ -56,6 +57,11 @@ class KaidlProcessor(private val codeGenerator: CodeGenerator) : SymbolProcessor
           .addAnnotation(
             AnnotationSpec.builder(Suppress::class)
               .addMember(DEFAULT_SUPPRESS.joinToString(", ") { s -> "\"$s\"" })
+              .build()
+          )
+          .addAnnotation(
+            AnnotationSpec.builder(ClassName("kotlin", "OptIn"))
+              .addMember("%T::class", ClassName("kotlin.uuid", "ExperimentalUuidApi"))
               .build()
           )
           .addStub(className, functions)

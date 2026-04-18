@@ -139,10 +139,10 @@ class KaidlProcessorTest {
     val text = generated.readText()
     assertThat(text)
       .contains(
-        "val `javaUuid`: UUID = UUID.fromString(checkNotNull(`data`.readString()))",
-        "`data`.writeString(`javaUuid`.toString())",
-        "val `kotlinUuid`: Uuid = Uuid.parse(checkNotNull(`data`.readString()))",
-        "`data`.writeString(`kotlinUuid`.toString())",
+        "val javaUuid: UUID = UUID.fromString(checkNotNull(`data`.readString()))",
+        "`data`.writeString(javaUuid.toString())",
+        "val kotlinUuid: Uuid = Uuid.parse(checkNotNull(`data`.readString()))",
+        "`data`.writeString(kotlinUuid.toString())",
       )
   }
 
@@ -517,7 +517,7 @@ class KaidlProcessorTest {
         import java.util.UUID
         import kotlin.uuid.Uuid
 
-        @OptIn(ExperimentalUuidApi::class)
+        @OptIn(kotlin.uuid.ExperimentalUuidApi::class)
         @BinderInterface
         interface UuidBridgeService {
           fun echoJavaUuid(javaUuid: UUID): UUID
