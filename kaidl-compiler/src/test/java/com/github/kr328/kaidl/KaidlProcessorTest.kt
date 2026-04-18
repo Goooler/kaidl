@@ -125,6 +125,89 @@ class KaidlProcessorTest {
     assertThat(result.messages).contains("@BinderInterface support only interfaces")
   }
 
+  @Test
+  fun usesExplicitCodeForSingleFunction() {
+    val compilation =
+      newCompilation(
+        annotationSource,
+        runtimeSource,
+        androidStubsSource,
+        SourceFile.kotlin(
+          "CodeMultiService.kt",
+          """
+          package com.example.service
+
+          import com.github.kr328.kaidl.BinderInterface
+          import com.github.kr328.kaidl.Code
+
+          @BinderInterface
+          interface CodeMultiService {
+            @Code(100)
+            fun first(): Int
+          }
+          """
+            .trimIndent(),
+        ),
+      )
+
+    val result = compilation.compile()
+
+    assertThat(result.exitCode).isEqualTo(KotlinCompilation.ExitCode.OK)
+
+    val generated =
+      compilation.kspSourcesDir.resolve("kotlin/com/example/service/CodeMultiService.kt")
+
+    assertThat(generated).exists()
+
+    val text = generated.readText()
+    assertThat(text)
+      .contains("public val TRANSACTION_first: Int = IBinder.FIRST_CALL_TRANSACTION + 100")
+  }
+
+  @Test
+  fun codeAnnotationGeneratesCorrectTransactionCodes() {
+    val compilation =
+      newCompilation(
+        annotationSource,
+        runtimeSource,
+        androidStubsSource,
+        SourceFile.kotlin(
+          "CodeTransactionService.kt",
+          """
+          package com.example.service
+
+          import com.github.kr328.kaidl.BinderInterface
+          import com.github.kr328.kaidl.Code
+
+          @BinderInterface
+          interface CodeTransactionService {
+            @Code(50)
+            fun methodA(value: Int): Int
+          }
+          """
+            .trimIndent(),
+        ),
+      )
+
+    val result = compilation.compile()
+
+    assertThat(result.exitCode).isEqualTo(KotlinCompilation.ExitCode.OK)
+
+    val generated =
+      compilation.kspSourcesDir.resolve("kotlin/com/example/service/CodeTransactionService.kt")
+
+    assertThat(generated).exists()
+
+    val text = generated.readText()
+    // Verify delegate contains transaction code property
+    assertThat(text)
+      .contains("public val TRANSACTION_methodA: Int = IBinder.FIRST_CALL_TRANSACTION + 50")
+    // Verify delegate uses the transaction code in onTransact
+    assertThat(text).contains("TRANSACTION_methodA ->")
+    // Verify proxy uses the transaction code
+    assertThat(text).contains("remote.transact(CodeTransactionServiceDelegate.TRANSACTION_methodA,")
+  }
+
   private fun newCompilation(vararg sources: SourceFile): KotlinCompilation {
     return KotlinCompilation().apply {
       inheritClassPath = true
