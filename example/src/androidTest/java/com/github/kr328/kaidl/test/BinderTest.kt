@@ -177,4 +177,46 @@ class BinderTest {
       }
     }
   }
+
+  @Test
+  fun codeAnnotation() {
+    val impl = CodeAnnotationImpl()
+    val loopback = LoopbackIBinder(impl.wrap())
+    val proxy = loopback.unwrap(CodeAnnotationInterface::class)
+
+    // Test getMessage
+    assertThat(proxy.getMessage()).isEqualTo("")
+
+    // Test setMessage
+    val testMessage = "Hello, Code Annotation!"
+    proxy.setMessage(testMessage)
+    assertThat(proxy.getMessage()).isEqualTo(testMessage)
+
+    // Test counter operations
+    assertThat(proxy.incrementCounter()).isEqualTo(1)
+    assertThat(proxy.incrementCounter()).isEqualTo(2)
+    assertThat(proxy.incrementCounter()).isEqualTo(3)
+
+    // Test resetCounter
+    proxy.resetCounter()
+    assertThat(proxy.getMessage()).isEqualTo(testMessage) // Message should be preserved
+    assertThat(proxy.incrementCounter()).isEqualTo(1) // Counter should restart from 1
+  }
+
+  @Test
+  fun codeAnnotationMultipleCalls() {
+    val impl = CodeAnnotationImpl()
+    val loopback = LoopbackIBinder(impl.wrap())
+    val proxy = loopback.unwrap(CodeAnnotationInterface::class)
+
+    // Multiple rapid calls to verify transaction codes work correctly
+    repeat(10) {
+      proxy.setMessage("Message $it")
+      assertThat(proxy.getMessage()).isEqualTo("Message $it")
+    }
+
+    // Verify counter persists across multiple calls
+    repeat(5) { proxy.incrementCounter() }
+    assertThat(proxy.incrementCounter()).isEqualTo(6)
+  }
 }

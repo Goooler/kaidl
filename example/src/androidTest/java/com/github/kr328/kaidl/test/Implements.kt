@@ -100,3 +100,23 @@ class SuspendImpl : SuspendInterface {
     throw Exception(msg)
   }
 }
+
+class CodeAnnotationImpl : CodeAnnotationInterface {
+  private var message: String = ""
+  private var counter: Int = 0
+
+  override fun getMessage(): String = message
+
+  override fun setMessage(message: String) {
+    this.message = message
+  }
+
+  override fun incrementCounter(): Int {
+    counter++
+    return counter
+  }
+
+  override fun resetCounter() {
+    counter = 0
+  }
+}
