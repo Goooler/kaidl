@@ -101,18 +101,14 @@ class KaidlProcessorTest {
   @Test
   fun generatesDateSerializationUsingEpochMillis() {
     val compilation =
-      newCompilation(
-        annotationSource,
-        runtimeSource,
-        androidStubsSource,
-        dateServiceSource,
-      )
+      newCompilation(annotationSource, runtimeSource, androidStubsSource, dateServiceSource)
 
     val result = compilation.compile()
 
     assertThat(result.exitCode).isEqualTo(KotlinCompilation.ExitCode.OK)
 
-    val generated = compilation.kspSourcesDir.resolve("kotlin/com/example/service/DateBridgeService.kt")
+    val generated =
+      compilation.kspSourcesDir.resolve("kotlin/com/example/service/DateBridgeService.kt")
 
     assertThat(generated).exists()
 
