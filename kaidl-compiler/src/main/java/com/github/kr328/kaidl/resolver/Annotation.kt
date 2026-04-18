@@ -22,14 +22,10 @@ inline fun <reified T> KSAnnotation.getValue(key: String?): T? {
 
   val rawValue = argument?.value ?: return null
 
-  return try {
-    when (T::class) {
-      Int::class -> (rawValue as? Int) as? T
-      String::class -> (rawValue as? String) as? T
-      Boolean::class -> (rawValue as? Boolean) as? T
-      else -> rawValue as? T
-    }
-  } catch (e: Exception) {
-    null
+  return when (T::class) {
+    Int::class -> (rawValue as? Int) as? T
+    String::class -> (rawValue as? String) as? T
+    Boolean::class -> (rawValue as? Boolean) as? T
+    else -> rawValue as? T
   }
 }
