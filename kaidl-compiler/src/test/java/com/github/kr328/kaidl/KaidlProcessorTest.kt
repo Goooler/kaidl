@@ -515,7 +515,6 @@ class KaidlProcessorTest {
 
         import com.github.kr328.kaidl.BinderInterface
         import java.util.UUID
-        import kotlin.uuid.ExperimentalUuidApi
         import kotlin.uuid.Uuid
 
         @OptIn(ExperimentalUuidApi::class)
@@ -523,6 +522,7 @@ class KaidlProcessorTest {
         interface UuidBridgeService {
           fun echoJavaUuid(javaUuid: UUID): UUID
 
+          @OptIn(kotlin.uuid.ExperimentalUuidApi::class)
           fun echoKotlinUuid(kotlinUuid: Uuid): Uuid
         }
         """
