@@ -7,6 +7,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
+import java.util.Date
 import java.util.Objects
 import java.util.UUID
 import kotlin.random.Random
@@ -68,6 +69,7 @@ class BinderTest {
     assertEchoEquals(random.nextFloatArray(64), proxy::echoFloatArray)
     assertEchoEquals(random.nextDoubleArray(64), proxy::echoDoubleArray)
     assertEchoEquals(random.nextSparseBooleanArray(64), proxy::echoSparseBooleanArray)
+    assertEchoEquals(Date(random.nextLong()), proxy::echoDate)
 
     val bundle = Bundle().apply { putLong("key", random.nextLong()) }
 

@@ -39,6 +39,7 @@ fun CodeBlock.Builder.addReadFromParcel(type: TypeName, parcelName: String): Cod
     "android.os.Bundle" -> addStatement("checkNotNull(%N.readBundle())", parcelName)
     "android.util.SparseBooleanArray" ->
       addStatement("checkNotNull(%N.readSparseBooleanArray())", parcelName)
+    "java.util.Date" -> addStatement("%T(%N.readLong())", type.copy(nullable = false), parcelName)
 
     // collections
     "kotlin.Pair" -> {
@@ -187,6 +188,7 @@ fun CodeBlock.Builder.addWriteToParcel(
     "android.os.Bundle" -> addStatement("%N.writeBundle(%N)", parcelName, valName)
     "android.util.SparseBooleanArray" ->
       addStatement("%N.writeSparseBooleanArray(%N)", parcelName, valName)
+    "java.util.Date" -> addStatement("%N.writeLong(%N.time)", parcelName, valName)
 
     // collections
     "kotlin.Pair" -> {

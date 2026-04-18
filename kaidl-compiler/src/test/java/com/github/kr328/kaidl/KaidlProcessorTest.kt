@@ -99,6 +99,30 @@ class KaidlProcessorTest {
   }
 
   @Test
+  fun generatesDateSerializationUsingEpochMillis() {
+    val compilation =
+      newCompilation(annotationSource, runtimeSource, androidStubsSource, dateServiceSource)
+
+    val result = compilation.compile()
+
+    assertThat(result.exitCode).isEqualTo(KotlinCompilation.ExitCode.OK)
+
+    val generated =
+      compilation.kspSourcesDir.resolve("kotlin/com/example/service/DateBridgeService.kt")
+
+    assertThat(generated).exists()
+
+    val text = generated.readText()
+    assertThat(text)
+      .contains(
+        "val `value`: Date = Date(`data`.readLong())",
+        "`data`.writeLong(`value`.time)",
+        "val _result: Date = Date(reply.readLong())",
+        "reply.writeLong(_result.time)",
+      )
+  }
+
+  @Test
   fun failsWhenBinderInterfaceIsNotAnInterface() {
     val compilation =
       newCompilation(
@@ -314,6 +338,10 @@ class KaidlProcessorTest {
 
           fun readInt(): Int = 0
 
+          fun writeLong(value: Long) = Unit
+
+          fun readLong(): Long = 0L
+
           fun recycle() = Unit
         }
         """
@@ -429,6 +457,23 @@ class KaidlProcessorTest {
         @BinderInterface
         interface AidlBridgeService {
           fun echoAidl(service: LegacyAidl): LegacyAidl
+        }
+        """
+          .trimIndent(),
+      )
+
+    val dateServiceSource =
+      SourceFile.kotlin(
+        "DateBridgeService.kt",
+        """
+        package com.example.service
+
+        import com.github.kr328.kaidl.BinderInterface
+        import java.util.Date
+
+        @BinderInterface
+        interface DateBridgeService {
+          fun echoDate(value: Date): Date
         }
         """
           .trimIndent(),

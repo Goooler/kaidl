@@ -3,6 +3,7 @@ package com.github.kr328.kaidl.test
 import android.os.Bundle
 import android.os.IBinder
 import android.util.SparseBooleanArray
+import java.util.Date
 import java.util.UUID
 
 class BasicTypeImpl : BasicTypeInterface {
@@ -47,6 +48,8 @@ class BasicTypeImpl : BasicTypeInterface {
   override fun echoBundle(v: Bundle) = v
 
   override fun echoSparseBooleanArray(v: SparseBooleanArray) = v
+
+  override fun echoDate(v: Date): Date = v
 }
 
 class ContainerImpl : ContainerInterface {
