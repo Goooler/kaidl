@@ -51,5 +51,7 @@ This project uses Spotless + ktfmt and `.editorconfig`.
 
 - Keep changes focused and minimal.
 - Add or update tests when behavior changes.
+- If you add a new feature, include coverage in tests and `example/src/androidTest`.
+- Update `README.md` when feature additions change user-facing behavior or usage.
 - Ensure formatting and relevant tests pass before opening a PR.
 - Write clear commit messages and PR descriptions.
