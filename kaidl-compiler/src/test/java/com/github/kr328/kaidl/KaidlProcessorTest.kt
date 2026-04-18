@@ -126,45 +126,6 @@ class KaidlProcessorTest {
   }
 
   @Test
-  fun usesExplicitCodeAnnotationForSingleFunction() {
-    val compilation =
-      newCompilation(
-        annotationSource,
-        runtimeSource,
-        androidStubsSource,
-        SourceFile.kotlin(
-          "CodeAnnotationService.kt",
-          """
-          package com.example.service
-
-          import com.github.kr328.kaidl.BinderInterface
-          import com.github.kr328.kaidl.Code
-
-          @BinderInterface
-          interface CodeAnnotationService {
-            @Code(42)
-            fun explicitCode(): Int
-          }
-          """
-            .trimIndent(),
-        ),
-      )
-
-    val result = compilation.compile()
-
-    assertThat(result.exitCode).isEqualTo(KotlinCompilation.ExitCode.OK)
-
-    val generated =
-      compilation.kspSourcesDir.resolve("kotlin/com/example/service/CodeAnnotationService.kt")
-
-    assertThat(generated).exists()
-
-    val text = generated.readText()
-    assertThat(text)
-      .contains("public val TRANSACTION_explicitCode: Int = IBinder.FIRST_CALL_TRANSACTION + 42")
-  }
-
-  @Test
   fun usesExplicitCodeForSingleFunction() {
     val compilation =
       newCompilation(
