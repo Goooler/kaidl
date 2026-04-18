@@ -36,7 +36,6 @@ class KaidlProcessorTest {
         "public val TRANSACTION_ping: Int = IBinder.FIRST_CALL_TRANSACTION + 0",
         "public val TRANSACTION_autoCode: Int = IBinder.FIRST_CALL_TRANSACTION + 1",
       )
-    assertThat(text).doesNotContain("ExperimentalUuidApi")
   }
 
   @Test
@@ -140,7 +139,6 @@ class KaidlProcessorTest {
     val text = generated.readText()
     assertThat(text)
       .contains(
-        "@OptIn(ExperimentalUuidApi::class)",
         "val javaUuid: UUID = UUID.fromString(checkNotNull(`data`.readString()))",
         "`data`.writeString(javaUuid.toString())",
         "val kotlinUuid: Uuid = Uuid.parse(checkNotNull(`data`.readString()))",

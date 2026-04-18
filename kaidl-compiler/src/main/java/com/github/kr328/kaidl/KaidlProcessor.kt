@@ -1,7 +1,6 @@
 package com.github.kr328.kaidl
 
 import com.github.kr328.kaidl.resolver.INTERFACE
-import com.github.kr328.kaidl.resolver.containsCanonicalName
 import com.github.kr328.kaidl.resolver.resolveFunctions
 import com.github.kr328.kaidl.resolver.store
 import com.github.kr328.kaidl.resolver.toClassName
@@ -46,38 +45,27 @@ class KaidlProcessor(private val codeGenerator: CodeGenerator) : SymbolProcessor
 
   private fun generate(classDeclaration: KSClassDeclaration) {
     val className = classDeclaration.toClassName()
-    val functions = classDeclaration.resolveFunctions().toList()
+    val functions = classDeclaration.resolveFunctions()
     val dependencies = Dependencies(true, checkNotNull(classDeclaration.containingFile))
-    val usesKotlinUuid =
-      functions.any { function ->
-        function.parameters.any { parameter ->
-          parameter.type.containsCanonicalName("kotlin.uuid.Uuid")
-        } || function.returnType.containsCanonicalName("kotlin.uuid.Uuid")
-      }
 
     codeGenerator
       .createNewFile(dependencies, className.packageName, className.simpleName)
       .writer()
       .use {
-        FileSpec
-          .builder(className.packageName, "")
+        FileSpec.builder(className.packageName, "")
           .addFileComment("Generated for $className")
           .addAnnotation(
             AnnotationSpec.builder(Suppress::class)
               .addMember(DEFAULT_SUPPRESS.joinToString(", ") { s -> "\"$s\"" })
               .build()
           )
-          .apply {
-            if (usesKotlinUuid) {
-              addAnnotation(
-                AnnotationSpec.builder(ClassName("kotlin", "OptIn"))
-                  .addMember("%T::class", ClassName("kotlin.uuid", "ExperimentalUuidApi"))
-                  .build()
-              )
-            }
-          }
-          .addStub(className, functions.asSequence())
-          .addProxyClass(className, functions.asSequence())
+          .addAnnotation(
+            AnnotationSpec.builder(ClassName("kotlin", "OptIn"))
+              .addMember("%T::class", ClassName("kotlin.uuid", "ExperimentalUuidApi"))
+              .build()
+          )
+          .addStub(className, functions)
+          .addProxyClass(className, functions)
           .addWrap(className)
           .addUnwrap(className)
           .build()
