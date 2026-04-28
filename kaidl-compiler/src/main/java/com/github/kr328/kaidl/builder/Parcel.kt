@@ -140,7 +140,26 @@ fun CodeBlock.Builder.addReadFromParcel(type: TypeName, parcelName: String): Cod
           )
         }
         ParcelableType.Serializable -> {
-          addStatement("%N.readSerializable() as %T", parcelName, type.copy(nullable = false))
+          val nonNullType = type.copy(nullable = false)
+          val serializableClassLiteralType =
+            (nonNullType as? ParameterizedTypeName)?.rawType ?: nonNullType
+
+          beginControlFlow(
+            "if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU)"
+          )
+          addStatement(
+            "checkNotNull(%N.readSerializable(null, %T::class.java))",
+            parcelName,
+            serializableClassLiteralType,
+          )
+          nextControlFlow("else")
+          addStatement(
+            "@Suppress(%S) checkNotNull(%N.readSerializable()) as %T",
+            "DEPRECATION",
+            parcelName,
+            nonNullType,
+          )
+          endControlFlow()
         }
         ParcelableType.Enum -> {
           addStatement("%T.values()[%N.readInt()]", type.copy(nullable = false), parcelName)

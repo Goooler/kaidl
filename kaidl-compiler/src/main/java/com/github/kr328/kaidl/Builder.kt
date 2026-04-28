@@ -196,44 +196,44 @@ fun TypeSpec.Builder.addOnTransact(functions: Sequence<FunSpec>): TypeSpec.Build
 fun TypeSpec.Builder.addProxy(forClass: ClassName, function: FunSpec): TypeSpec.Builder {
   val code =
     CodeBlock.builder()
-      .addStatement("val `data` = Parcel.obtain()")
-      .addStatement("val `reply` = Parcel.obtain()")
+      .addStatement("val `_data` = Parcel.obtain()")
+      .addStatement("val `_reply` = Parcel.obtain()")
   val func = function.toBuilder().addModifiers(KModifier.OVERRIDE)
 
   with(code) {
     beginControlFlow("return try")
 
-    addStatement("`data`.writeInterfaceToken(%T.%N)", forClass.delegate, descriptorProperty.name)
+    addStatement("`_data`.writeInterfaceToken(%T.%N)", forClass.delegate, descriptorProperty.name)
 
     for (p in function.parameters) {
-      addWriteToParcel(p.name, p.type, "data")
+      addWriteToParcel(p.name, p.type, "_data")
     }
 
     if (function.modifiers.contains(KModifier.SUSPEND)) {
       addStatement(
-        "remote.%M(%T.%N, `data`, reply)",
+        "remote.%M(%T.%N, `_data`, _reply)",
         MemberName(com.github.kr328.kaidl.resolver.INTERFACE.packageName, "suspendTransact"),
         forClass.delegate,
         function.transactionProperty.name,
       )
     } else {
       addStatement(
-        "remote.transact(%T.%N, `data`, reply, 0)",
+        "remote.transact(%T.%N, `_data`, _reply, 0)",
         forClass.delegate,
         function.transactionProperty.name,
       )
     }
 
-    addStatement("reply.readException()")
+    addStatement("_reply.readException()")
 
-    addReadFromParcel("_result", function.returnType, "reply")
+    addReadFromParcel("_result", function.returnType, "_reply")
 
     addStatement("_result")
 
     nextControlFlow("finally")
 
-    addStatement("data.recycle()")
-    addStatement("reply.recycle()")
+    addStatement("_data.recycle()")
+    addStatement("_reply.recycle()")
 
     endControlFlow()
   }
