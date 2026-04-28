@@ -144,13 +144,13 @@ fun CodeBlock.Builder.addReadFromParcel(type: TypeName, parcelName: String): Cod
           val serializableClassLiteralType =
             (nonNullType as? ParameterizedTypeName)?.rawType ?: nonNullType
 
-          beginControlFlow(
-            "if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU)"
-          )
+          beginControlFlow("if (android.os.Build.VERSION.SDK_INT >= 33)")
           addStatement(
-            "checkNotNull(%N.readSerializable(null, %T::class.java)) as %T",
+            "checkNotNull(android.os.Parcel::class.java.getMethod(%S, java.lang.ClassLoader::class.java, java.lang.Class::class.java).invoke(%N, null, %T::class.java)) as %T",
+            "readSerializable",
             parcelName,
             serializableClassLiteralType,
+            nonNullType,
             nonNullType,
           )
           nextControlFlow("else")
