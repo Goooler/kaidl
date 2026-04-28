@@ -146,6 +146,38 @@ class KaidlProcessorTest {
       )
   }
 
+
+  @Test
+  fun generatesSerializableReaderUsingVersionCheckedApi() {
+    val compilation =
+      newCompilation(
+        annotationSource,
+        runtimeSource,
+        androidStubsSource,
+        serializableTypeSource,
+        serializableServiceSource,
+      )
+
+    val result = compilation.compile()
+
+    assertThat(result.exitCode).isEqualTo(KotlinCompilation.ExitCode.OK)
+
+    val generated =
+      compilation.kspSourcesDir.resolve(
+        "kotlin/com/example/service/SerializableBridgeService.kt"
+      )
+
+    assertThat(generated).exists()
+
+    val text = generated.readText()
+    assertThat(text)
+      .contains(
+        "if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU)",
+        "checkNotNull(`data`.readSerializable(null, MyData::class.java))",
+        "@Suppress(\"DEPRECATION\") `data`.readSerializable() as MyData",
+      )
+  }
+
   @Test
   fun failsWhenBinderInterfaceIsNotAnInterface() {
     val compilation =
@@ -371,6 +403,23 @@ class KaidlProcessorTest {
           fun readString(): String? = null
 
           fun recycle() = Unit
+
+          @Deprecated("Use readSerializable(ClassLoader?, Class<T>) instead")
+          fun readSerializable(): java.io.Serializable? = null
+
+          fun <T : java.io.Serializable> readSerializable(loader: ClassLoader?, clazz: Class<T>): T? = null
+
+          fun writeSerializable(s: java.io.Serializable?) = Unit
+        }
+
+        object Build {
+          object VERSION_CODES {
+            const val TIRAMISU = 33
+          }
+
+          object VERSION {
+            var SDK_INT: Int = 0
+          }
         }
         """
           .trimIndent(),
@@ -524,6 +573,35 @@ class KaidlProcessorTest {
 
           @OptIn(kotlin.uuid.ExperimentalUuidApi::class)
           fun echoKotlinUuid(kotlinUuid: Uuid): Uuid
+        }
+        """
+          .trimIndent(),
+      )
+
+    val serializableTypeSource =
+      SourceFile.kotlin(
+        "MyData.kt",
+        """
+        package com.example.service
+
+        import java.io.Serializable
+
+        data class MyData(val value: String) : Serializable
+        """
+          .trimIndent(),
+      )
+
+    val serializableServiceSource =
+      SourceFile.kotlin(
+        "SerializableBridgeService.kt",
+        """
+        package com.example.service
+
+        import com.github.kr328.kaidl.BinderInterface
+
+        @BinderInterface
+        interface SerializableBridgeService {
+          fun echoData(data: MyData): MyData
         }
         """
           .trimIndent(),
