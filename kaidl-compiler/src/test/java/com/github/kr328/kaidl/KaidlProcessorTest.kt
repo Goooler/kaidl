@@ -63,8 +63,8 @@ class KaidlProcessorTest {
       .contains(
         "val service: LegacyAidl = LegacyAidl.Stub.asInterface(checkNotNull(`data`.readStrongBinder()))",
         "reply.writeStrongBinder(_result.asBinder())",
-        "`data`.writeStrongBinder(service.asBinder())",
-        "val _result: LegacyAidl = LegacyAidl.Stub.asInterface(checkNotNull(reply.readStrongBinder()))",
+        "_data.writeStrongBinder(service.asBinder())",
+        "val _result: LegacyAidl = LegacyAidl.Stub.asInterface(checkNotNull(_reply.readStrongBinder()))",
       )
   }
 
@@ -116,8 +116,8 @@ class KaidlProcessorTest {
     assertThat(text)
       .contains(
         "val `value`: Date = Date(`data`.readLong())",
-        "`data`.writeLong(`value`.time)",
-        "val _result: Date = Date(reply.readLong())",
+        "_data.writeLong(`value`.time)",
+        "val _result: Date = Date(_reply.readLong())",
         "reply.writeLong(_result.time)",
       )
   }
@@ -140,12 +140,11 @@ class KaidlProcessorTest {
     assertThat(text)
       .contains(
         "val javaUuid: UUID = UUID.fromString(checkNotNull(`data`.readString()))",
-        "`data`.writeString(javaUuid.toString())",
+        "_data.writeString(javaUuid.toString())",
         "val kotlinUuid: Uuid = Uuid.parse(checkNotNull(`data`.readString()))",
-        "`data`.writeString(kotlinUuid.toString())",
+        "_data.writeString(kotlinUuid.toString())",
       )
   }
-
 
   @Test
   fun generatesSerializableReaderUsingVersionCheckedApi() {
@@ -163,9 +162,7 @@ class KaidlProcessorTest {
     assertThat(result.exitCode).isEqualTo(KotlinCompilation.ExitCode.OK)
 
     val generated =
-      compilation.kspSourcesDir.resolve(
-        "kotlin/com/example/service/SerializableBridgeService.kt"
-      )
+      compilation.kspSourcesDir.resolve("kotlin/com/example/service/SerializableBridgeService.kt")
 
     assertThat(generated).exists()
 
