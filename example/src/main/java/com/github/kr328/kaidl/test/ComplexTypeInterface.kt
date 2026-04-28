@@ -23,4 +23,8 @@ interface ComplexTypeInterface {
   @OptIn(kotlin.uuid.ExperimentalUuidApi::class) fun echoKotlinUuid(v: Uuid): Uuid
 
   fun echoEnum(v: ExampleEnum): ExampleEnum
+
+  fun echoSerializable(s: ExampleSerializable): ExampleSerializable
+
+  fun echoSerializableNullable(s: ExampleSerializable?): ExampleSerializable?
 }

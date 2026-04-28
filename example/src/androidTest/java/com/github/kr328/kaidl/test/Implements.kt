@@ -97,6 +97,10 @@ class ComplexTypesImpl : ComplexTypeInterface {
   override fun echoKotlinUuid(v: Uuid): Uuid = v
 
   override fun echoEnum(v: ExampleEnum): ExampleEnum = v
+
+  override fun echoSerializable(s: ExampleSerializable) = s
+
+  override fun echoSerializableNullable(s: ExampleSerializable?) = s
 }
 
 class SuspendImpl : SuspendInterface {

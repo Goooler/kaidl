@@ -161,6 +161,9 @@ class BinderTest {
     assertEchoEquals(UUID.randomUUID(), proxy::echoUUID)
     assertEchoEquals(Uuid.random(), proxy::echoKotlinUuid)
     assertEchoEquals(ExampleEnum.entries[random.nextInt(ExampleEnum.entries.size)], proxy::echoEnum)
+    assertEchoEquals(random.nextSerializable(), proxy::echoSerializable)
+    assertEchoEquals(random.nextSerializable(), proxy::echoSerializableNullable)
+    assertEchoEquals(null, proxy::echoSerializableNullable)
   }
 
   @Test
