@@ -225,4 +225,18 @@ class BinderTest {
     repeat(5) { proxy.incrementCounter() }
     assertThat(proxy.incrementCounter()).isEqualTo(6)
   }
+
+  @Test
+  fun parcelSerializable() {
+    val impl = SerializableImpl().wrap()
+    val loopback = LoopbackIBinder(impl)
+    val proxy = loopback.unwrap(SerializableInterface::class)
+    val random = Random(System.currentTimeMillis())
+
+    assertEchoEquals(
+      SerializableData(random.nextString(), random.nextInt()),
+      proxy::echoSerializable,
+    )
+    assertEchoEquals(SerializableData("", 0), proxy::echoSerializable)
+  }
 }

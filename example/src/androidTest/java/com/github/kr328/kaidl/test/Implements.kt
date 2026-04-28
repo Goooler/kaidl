@@ -128,3 +128,7 @@ class CodeAnnotationImpl : CodeAnnotationInterface {
     counter = 0
   }
 }
+
+class SerializableImpl : SerializableInterface {
+  override fun echoSerializable(data: SerializableData): SerializableData = data
+}
