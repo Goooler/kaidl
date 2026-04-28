@@ -169,9 +169,17 @@ class KaidlProcessorTest {
     val text = generated.readText()
     assertThat(text)
       .contains(
-        "if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU)",
-        "checkNotNull(`data`.readSerializable(null, MyData::class.java))",
-        "@Suppress(\"DEPRECATION\") checkNotNull(`data`.readSerializable()) as MyData",
+        """
+        |        val `data`: MyData = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+        |          checkNotNull(`data`.readSerializable(null, MyData::class.java))
+        |        } else {
+        |          @Suppress("DEPRECATION") checkNotNull(`data`.readSerializable()) as MyData
+        |        }
+        |        val _result: MyData = echoData(data)
+        |        reply.writeNoException()
+        |        reply.writeSerializable(_result)
+        """
+          .trimMargin()
       )
   }
 
