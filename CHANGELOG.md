@@ -8,6 +8,10 @@
 - Support `java.util.Date` parcelization.
 - Support `java.util.UUID` and `kotlin.uuid.Uuid` parcelization.
 
+### Fixed
+
+- Fix deprecated `readSerializable` usages.
+
 ## [0.1.0](https://github.com/Goooler/kaidl/releases/tag/0.1.0) - 2026-04-17
 
 ### Fixed
