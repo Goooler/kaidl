@@ -174,7 +174,7 @@ class KaidlProcessorTest {
       .contains(
         "if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU)",
         "checkNotNull(`data`.readSerializable(null, MyData::class.java))",
-        "@Suppress(\"DEPRECATION\") `data`.readSerializable() as MyData",
+        "@Suppress(\"DEPRECATION\") checkNotNull(`data`.readSerializable()) as MyData",
       )
   }
 

@@ -150,7 +150,7 @@ fun CodeBlock.Builder.addReadFromParcel(type: TypeName, parcelName: String): Cod
           )
           nextControlFlow("else")
           addStatement(
-            "@Suppress(%S) %N.readSerializable() as %T",
+            "@Suppress(%S) checkNotNull(%N.readSerializable()) as %T",
             "DEPRECATION",
             parcelName,
             type.copy(nullable = false),
