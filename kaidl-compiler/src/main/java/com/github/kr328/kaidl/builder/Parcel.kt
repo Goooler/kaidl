@@ -148,9 +148,10 @@ fun CodeBlock.Builder.addReadFromParcel(type: TypeName, parcelName: String): Cod
             "if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU)"
           )
           addStatement(
-            "checkNotNull(%N.readSerializable(null, %T::class.java))",
+            "checkNotNull(%N.readSerializable(null, %T::class.java)) as %T",
             parcelName,
             serializableClassLiteralType,
+            nonNullType,
           )
           nextControlFlow("else")
           addStatement(
