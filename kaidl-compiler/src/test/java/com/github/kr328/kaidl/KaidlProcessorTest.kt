@@ -61,8 +61,8 @@ class KaidlProcessorTest {
     val text = generated.readText()
     assertThat(text)
       .contains(
-        "val service: LegacyAidl = LegacyAidl.Stub.asInterface(checkNotNull(_data.readStrongBinder()))",
-        "_reply.writeStrongBinder(_result.asBinder())",
+        "val service: LegacyAidl = LegacyAidl.Stub.asInterface(checkNotNull(`data`.readStrongBinder()))",
+        "reply.writeStrongBinder(_result.asBinder())",
         "_data.writeStrongBinder(service.asBinder())",
         "val _result: LegacyAidl = LegacyAidl.Stub.asInterface(checkNotNull(_reply.readStrongBinder()))",
       )
@@ -93,7 +93,7 @@ class KaidlProcessorTest {
     assertThat(text)
       .contains(
         "import kotlinx.parcelize.parcelableCreator",
-        "checkNotNull(parcelableCreator<ConfigurationOverride>().createFromParcel(_data))",
+        "checkNotNull(parcelableCreator<ConfigurationOverride>().createFromParcel(`data`))",
       )
     assertThat(text).doesNotContain("ConfigurationOverride.CREATOR.createFromParcel")
   }
@@ -115,10 +115,10 @@ class KaidlProcessorTest {
     val text = generated.readText()
     assertThat(text)
       .contains(
-        "val `value`: Date = Date(_data.readLong())",
+        "val `value`: Date = Date(`data`.readLong())",
         "_data.writeLong(`value`.time)",
         "val _result: Date = Date(_reply.readLong())",
-        "_reply.writeLong(_result.time)",
+        "reply.writeLong(_result.time)",
       )
   }
 
@@ -139,9 +139,9 @@ class KaidlProcessorTest {
     val text = generated.readText()
     assertThat(text)
       .contains(
-        "val javaUuid: UUID = UUID.fromString(checkNotNull(_data.readString()))",
+        "val javaUuid: UUID = UUID.fromString(checkNotNull(`data`.readString()))",
         "_data.writeString(javaUuid.toString())",
-        "val kotlinUuid: Uuid = Uuid.parse(checkNotNull(_data.readString()))",
+        "val kotlinUuid: Uuid = Uuid.parse(checkNotNull(`data`.readString()))",
         "_data.writeString(kotlinUuid.toString())",
       )
   }
@@ -171,13 +171,13 @@ class KaidlProcessorTest {
       .contains(
         """
         |        val `data`: MyData = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-        |          checkNotNull(_data.readSerializable(null, MyData::class.java))
+        |          checkNotNull(`data`.readSerializable(null, MyData::class.java))
         |        } else {
-        |          @Suppress("DEPRECATION") checkNotNull(_data.readSerializable()) as MyData
+        |          @Suppress("DEPRECATION") checkNotNull(`data`.readSerializable()) as MyData
         |        }
         |        val _result: MyData = echoData(data)
-        |        _reply.writeNoException()
-        |        _reply.writeSerializable(_result)
+        |        reply.writeNoException()
+        |        reply.writeSerializable(_result)
         """
           .trimMargin()
       )
