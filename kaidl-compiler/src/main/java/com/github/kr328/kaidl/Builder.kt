@@ -135,17 +135,17 @@ fun TypeSpec.Builder.addOnTransact(functions: Sequence<FunSpec>): TypeSpec.Build
       for (f in functions) {
         beginControlFlow("%N ->", f.transactionProperty.name)
 
-        addStatement("reply ?: return false")
+        addStatement("_reply ?: return false")
 
-        addStatement("`data`.enforceInterface(%N)", descriptorProperty.name)
+        addStatement("_data.enforceInterface(%N)", descriptorProperty.name)
 
         for (p in f.parameters) {
-          addReadFromParcel(p.name, p.type, "data")
+          addReadFromParcel(p.name, p.type, "_data")
         }
 
         if (f.modifiers.contains(KModifier.SUSPEND)) {
           beginControlFlow(
-            "%M(data, reply)",
+            "%M(_data, _reply)",
             MemberName(com.github.kr328.kaidl.resolver.INTERFACE.packageName, "suspendTransaction"),
           )
 
@@ -156,9 +156,9 @@ fun TypeSpec.Builder.addOnTransact(functions: Sequence<FunSpec>): TypeSpec.Build
 
         addStatement("val %N: %T = %N($args)", "_result", f.returnType, f.name)
 
-        addStatement("reply.writeNoException()")
+        addStatement("_reply.writeNoException()")
 
-        addWriteToParcel("_result", f.returnType, "reply")
+        addWriteToParcel("_result", f.returnType, "_reply")
 
         if (f.modifiers.contains(KModifier.SUSPEND)) {
           endControlFlow()
@@ -169,7 +169,7 @@ fun TypeSpec.Builder.addOnTransact(functions: Sequence<FunSpec>): TypeSpec.Build
 
       beginControlFlow("else ->")
 
-      addStatement("return super.onTransact(code, data, reply, flags)")
+      addStatement("return super.onTransact(code, _data, _reply, flags)")
 
       endControlFlow()
 
@@ -182,9 +182,9 @@ fun TypeSpec.Builder.addOnTransact(functions: Sequence<FunSpec>): TypeSpec.Build
     FunSpec.builder("onTransact")
       .addModifiers(KModifier.OVERRIDE)
       .addParameter(ParameterSpec("code", INT))
-      .addParameter(ParameterSpec("data", com.github.kr328.kaidl.resolver.PARCEL))
+      .addParameter(ParameterSpec("_data", com.github.kr328.kaidl.resolver.PARCEL))
       .addParameter(
-        ParameterSpec("reply", com.github.kr328.kaidl.resolver.PARCEL.copy(nullable = true))
+        ParameterSpec("_reply", com.github.kr328.kaidl.resolver.PARCEL.copy(nullable = true))
       )
       .addParameter(ParameterSpec("flags", INT))
       .returns(BOOLEAN)
