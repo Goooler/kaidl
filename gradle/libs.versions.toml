@@ -6,7 +6,7 @@ kct = "0.12.1"
 jvmTarget = "17"
 
 [libraries]
-coroutine = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2"
+coroutine = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.11.0"
 kotlinpoet = "com.squareup:kotlinpoet:2.3.0"
 ksp-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 junit-jvm = "junit:junit:4.13.2"
