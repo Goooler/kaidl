@@ -17,7 +17,7 @@ kct-core = { module = "dev.zacsweers.kctfork:core", version.ref = "kct" }
 kct-ksp = { module = "dev.zacsweers.kctfork:ksp", version.ref = "kct" }
 
 # Dummy to get renovate updates, the version is used in rootProject build.gradle with spotless.
-ktfmt = "com.facebook:ktfmt:0.63"
+ktfmt = "com.facebook:ktfmt:0.64"
 
 [plugins]
 android-library = { id = "com.android.library", version.ref = "agp" }
