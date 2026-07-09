@@ -1,7 +1,7 @@
 [versions]
 kotlin = "2.4.0"
 agp = "9.2.1"
-ksp = "2.3.9"
+ksp = "2.3.10"
 kct = "0.13.0"
 jvmTarget = "17"
 
