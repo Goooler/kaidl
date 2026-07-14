@@ -1,6 +1,6 @@
 [versions]
 kotlin = "2.4.10"
-agp = "9.2.1"
+agp = "9.3.0"
 ksp = "2.3.10"
 kct = "0.13.0"
 jvmTarget = "17"
