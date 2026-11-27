@@ -2,7 +2,7 @@
 kotlin = "2.4.21"
 agp = "9.5.3"
 ksp = "2.3.14"
-kct = "0.14.0"
+kct = "0.15.0"
 jvmTarget = "17"
 
 [libraries]
